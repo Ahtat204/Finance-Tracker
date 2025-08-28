@@ -7,7 +7,7 @@ module org.asue24.financetrackerfrontend {
     requires com.dlsc.formsfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
+
 
     opens org.asue24.financetrackerfrontend to javafx.fxml;
     exports org.asue24.financetrackerfrontend;

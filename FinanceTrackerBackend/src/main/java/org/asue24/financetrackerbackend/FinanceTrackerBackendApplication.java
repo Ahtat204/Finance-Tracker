@@ -1,5 +1,6 @@
 package org.asue24.financetrackerbackend;
 
+import org.asue24.financetrackerbackend.models.User;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

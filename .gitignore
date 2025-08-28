@@ -12,7 +12,9 @@ target/
 .settings
 .springBeans
 .sts4-cache
-src/main/ressources/applications.properties
+
+FinanceTrackerBackend/src/main/resources/application.properties
+FinanceTrackerFrontEnd/src/main/resources/org/asue24/financetrackerfrontend/
 ### IntelliJ IDEA ###
 .idea
 *.iws
