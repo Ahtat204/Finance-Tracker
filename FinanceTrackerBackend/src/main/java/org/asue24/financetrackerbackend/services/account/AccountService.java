@@ -1,6 +1,11 @@
 package org.asue24.financetrackerbackend.services.account;
 import org.asue24.financetrackerbackend.entities.Account;
+
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Service interface for managing {@link Account} entities.
  * <p>
@@ -19,37 +24,37 @@ public interface AccountService {
      * @param account the account entity to be created
      * @return the persisted {@link Account} with an assigned identifier
      */
-    Account addAccount(Account account);
+    CompletableFuture<Account> addAccount(Account account);
 
     /**
      * Deletes an existing {@link Account}.
      *
-     * @param account the account entity to be deleted
+     * @param id the account id to be deleted
      * @return {@code true} if the account was successfully deleted,
      *         {@code false} otherwise
      */
-    Boolean deleteAccount(Account account);
+    CompletableFuture<Boolean> deleteAccount(Long id);
 
     /**
      * Updates the details of an existing {@link Account}.
-     *
+     * @param id the id of the entity intended to update
      * @param account the account entity containing updated information
      * @return the updated {@link Account} after persistence
      */
-    Account updateAccount(Account account);
+    CompletableFuture<Account> updateAccount(Long id,Account account);
 
     /**
      * Retrieves an {@link Account} by its unique identifier.
      *
      * @param accountId the unique identifier of the account
-     * @return the {@link Account} if found, or {@code null} if no account exists with the given ID
+     * @return the {@link Account} if found, or {@code RunTimeException} if no account exists with the given ID
      */
-    Account getAccountByAccountId(Long  accountId);
+    CompletableFuture<Account> getAccountByAccountId(Long  accountId) throws RuntimeException;
     /**
      * Retrieves all {@link Account} entities in the system.
      *
      * @return a list of all accounts; may be empty if no accounts exist
      */
-    List<Account> getAccounts();
+    CompletableFuture<List<Account>> getAccounts();
 }
 

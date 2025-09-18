@@ -1,6 +1,10 @@
 package org.asue24.financetrackerbackend.services.transaction;
 import org.asue24.financetrackerbackend.entities.Transaction;
+import org.springframework.web.client.HttpClientErrorException;
+
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Service interface for managing {@link Transaction} entities.
@@ -18,24 +22,24 @@ public interface TransactionService {
      * @param transaction the transaction entity to create
      * @return the persisted {@link Transaction} with an assigned identifier
      */
-    Transaction createTransaction(Transaction transaction);
+    CompletableFuture<Transaction> createTransaction(Transaction transaction);
 
     /**
      * Deletes an existing {@link Transaction}.
      *
-     * @param transaction the transaction entity to delete
+     * @param id the transaction id of the entity to delete
      * @return {@code true} if the transaction was successfully deleted,
      *         {@code false} otherwise
      */
-    Boolean deleteTransaction(Transaction transaction);
+    CompletableFuture<Boolean> deleteTransaction(Long id);
 
     /**
      * Updates the details of an existing {@link Transaction}.
-     *
+     * @param id the id of the transaction for update
      * @param transaction the transaction entity containing updated information
      * @return the updated {@link Transaction} after persistence
      */
-    Transaction updateTransaction(Transaction transaction);
+    CompletableFuture<Transaction> updateTransaction(Long id,Transaction transaction);
 
     /**
      * Retrieves a {@link Transaction}.
@@ -47,12 +51,12 @@ public interface TransactionService {
      * @param transactionId the transaction entity to retrieve
      * @return the matching {@link Transaction}, or {@code null} if not found
      */
-    Transaction getTransaction(Long transactionId);
+  CompletableFuture<  Transaction> getTransaction(Long transactionId) throws RuntimeException;
 
     /**
      * Retrieves all {@link Transaction} entities in the system.
      *
      * @return a list of all transactions; may be empty if no transactions exist
      */
-    List<Transaction> getAllTransactions();
+    CompletableFuture<List<Transaction>> getAllTransactions();
 }
