@@ -33,11 +33,11 @@ public class AccountServiceImpl implements AccountService {
      * @param account the account entity to be created
      * @return the saved account with its generated ID
      */
-    @Async
+
     @Override
-    public CompletableFuture<Account> addAccount(Account account) {
+    public Account addAccount(Account account) {
         var Acc = accountRepository.save(account);
-        return CompletableFuture.completedFuture(Acc);
+        return Acc;
     }
 
     /**
@@ -47,14 +47,14 @@ public class AccountServiceImpl implements AccountService {
      * @return {@code true} if the account was successfully deleted,
      * {@code false} if the account does not exist
      */
-    @Async
+
     @Override
-    public CompletableFuture<Boolean> deleteAccount(Long id) {
+    public Boolean deleteAccount(Long id) {
         if (accountRepository.existsById(id)) {
             accountRepository.deleteById(id);
-            return CompletableFuture.completedFuture(true);
+            return true;
         }
-        return CompletableFuture.completedFuture(false);
+        return false;
 
     }
 
@@ -69,13 +69,13 @@ public class AccountServiceImpl implements AccountService {
      * @return the updated account entity
      * @throws IllegalArgumentException if the account does not exist
      */
-    @Async
+
     @Override
-    public CompletableFuture<Account> updateAccount(Long id, Account account) {
+    public Account updateAccount(Long id, Account account) {
 
         if (accountRepository.existsById(id)) {
             var result = accountRepository.save(account);
-            return CompletableFuture.completedFuture(result);
+            return result;
         } else {
             throw new IllegalArgumentException("Account not found for update.");
         }
@@ -87,12 +87,12 @@ public class AccountServiceImpl implements AccountService {
      * @param accountId the ID of the account to retrieve
      * @return the account entity if found, or {@code null} if not found
      */
-    @Async
+
     @Override
-    public CompletableFuture<Account> getAccountByAccountId(Long accountId) {
+    public Account getAccountByAccountId(Long accountId) {
         var account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new RuntimeException(accountId.toString()));
-        return CompletableFuture.completedFuture(account);
+        return account;
     }
 
 
@@ -103,8 +103,8 @@ public class AccountServiceImpl implements AccountService {
      */
     @Async
     @Override
-    public CompletableFuture<List<Account>> getAccounts() {
+    public List<Account> getAccounts() {
         var accounts = accountRepository.findAll();
-        return CompletableFuture.completedFuture(accounts);
+        return accounts;
     }
 }

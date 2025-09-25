@@ -1,20 +1,21 @@
 package org.asue24.financetrackerbackend.controllers;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.services.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Optional;
 
 /**
  * REST controller for managing financial transactions.
  * <p>
  * Provides endpoints to create, retrieve, update, and delete transactions.
- * All operations are handled asynchronously using {@link CompletableFuture}.
  * </p>
  */
 @RestController
@@ -34,70 +35,72 @@ public class TransactionController {
     }
 
     /**
-     * Retrieves a transaction by its ID asynchronously.
+     * Retrieves a transaction by its ID .
      *
      * @param id the ID of the transaction to retrieve
-     * @return a {@link CompletableFuture} containing {@link ResponseEntity}
-     *         with the requested transaction and HTTP status 200 (OK)
+     * @return a  {@link ResponseEntity}
+     * with the requested transaction and HTTP status 200 (OK)
      */
     @GetMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Transaction>> getTransactionById(@PathVariable Long id) {
-        return transactionService.getTransaction(id)
-                .thenApply(transaction -> ResponseEntity.ok(transaction))
-                .exceptionally(ex -> ResponseEntity.notFound().build());
-    }
-
-    /**
-     * Creates a new transaction asynchronously.
-     *
-     * @param transaction the transaction object to create
-     * @return a {@link CompletableFuture} containing {@link ResponseEntity}
-     *         with the created transaction and HTTP status 200 (OK)
-     */
-    @PostMapping
-    public CompletableFuture<ResponseEntity<Transaction>> createTransaction(@RequestBody Transaction transaction) {
-        return transactionService.createTransaction(transaction)
-                .thenApply(createdTransaction -> ResponseEntity.ok(createdTransaction));
+    public ResponseEntity<Transaction> getTransactionById(@PathVariable Long id) {
+        return ResponseEntity.of(Optional.ofNullable(transactionService.getTransaction(id)));
     }
 
     /**
      * Retrieves all transactions asynchronously.
      *
-     * @return a {@link CompletableFuture} containing {@link ResponseEntity}
-     *         with a list of all transactions and HTTP status 200 (OK)
+     * @return a {@link ResponseEntity}
+     * with a list of all transactions and HTTP status 200 (OK)
      */
     @GetMapping
-    public CompletableFuture<ResponseEntity<List<Transaction>>> getAllTransactions() {
-        return transactionService.getAllTransactions()
-                .thenApply(transactions -> ResponseEntity.ok(transactions));
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
+        var result = transactionService.getAllTransactions();
+        return ResponseEntity.ok(result);
     }
 
     /**
-     * Updates an existing transaction by its ID asynchronously.
+     * Creates a new transaction
+     *
+     * @param transaction the transaction object to create
+     * @return a {@link ResponseEntity}
+     * with the created transaction and HTTP status 200 (OK)
+     */
+    @PostMapping
+    public ResponseEntity<Transaction> createTransaction(@NotNull @RequestBody Transaction transaction) {
+        var result = transactionService.createTransaction(transaction);
+        if (result != null) return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * Updates an existing transaction by its ID
      *
      * @param id          the ID of the transaction to update
      * @param transaction the transaction object containing updated information
-     * @return a {@link CompletableFuture} containing {@link ResponseEntity}
-     *         with the updated transaction and HTTP status 200 (OK)
+     * @return a {@link ResponseEntity}
+     * with the updated transaction and HTTP status 200 (OK)
      */
     @PutMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Transaction>> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
-        return transactionService.updateTransaction(id, transaction)
-                .thenApply(updatedTransaction -> ResponseEntity.ok(updatedTransaction))
-                .exceptionally(ex -> ResponseEntity.notFound().build());
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody Transaction transaction) {
+        var updated = transactionService.updateTransaction(id, transaction);
+        if (updated == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updated);
     }
 
     /**
      * Deletes a transaction by its ID asynchronously.
      *
      * @param id the ID of the transaction to delete
-     * @return a {@link CompletableFuture} containing {@link ResponseEntity}
-     *         with a boolean indicating success and HTTP status 200 (OK)
+     * @return a {@link ResponseEntity}
+     * with a boolean indicating success and HTTP status 200 (OK)
      */
     @DeleteMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Boolean>> deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTransaction(@PathVariable Long id) {
         return transactionService.deleteTransaction(id)
-                .thenApply(deleted -> ResponseEntity.ok(deleted))
-                .exceptionally(ex -> ResponseEntity.notFound().build());
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.notFound().build();
+
     }
 }

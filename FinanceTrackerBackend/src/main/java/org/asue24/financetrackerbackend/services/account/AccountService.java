@@ -24,7 +24,7 @@ public interface AccountService {
      * @param account the account entity to be created
      * @return the persisted {@link Account} with an assigned identifier
      */
-    CompletableFuture<Account> addAccount(Account account);
+    Account addAccount(Account account);
 
     /**
      * Deletes an existing {@link Account}.
@@ -33,7 +33,7 @@ public interface AccountService {
      * @return {@code true} if the account was successfully deleted,
      *         {@code false} otherwise
      */
-    CompletableFuture<Boolean> deleteAccount(Long id);
+    Boolean deleteAccount(Long id);
 
     /**
      * Updates the details of an existing {@link Account}.
@@ -41,7 +41,7 @@ public interface AccountService {
      * @param account the account entity containing updated information
      * @return the updated {@link Account} after persistence
      */
-    CompletableFuture<Account> updateAccount(Long id,Account account);
+    Account updateAccount(Long id,Account account);
 
     /**
      * Retrieves an {@link Account} by its unique identifier.
@@ -49,12 +49,12 @@ public interface AccountService {
      * @param accountId the unique identifier of the account
      * @return the {@link Account} if found, or {@code RunTimeException} if no account exists with the given ID
      */
-    CompletableFuture<Account> getAccountByAccountId(Long  accountId) throws RuntimeException;
+    Account getAccountByAccountId(Long  accountId) throws RuntimeException;
     /**
      * Retrieves all {@link Account} entities in the system.
      *
      * @return a list of all accounts; may be empty if no accounts exist
      */
-    CompletableFuture<List<Account>> getAccounts();
+    List<Account> getAccounts();
 }
 

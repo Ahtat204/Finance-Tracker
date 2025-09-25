@@ -33,9 +33,10 @@ public class Account {
     @Column(name = "balance", nullable = false)
     private Double balance;
 
+
     /** The user who owns this account. */
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class)
+    @JoinColumn(name = "user_id")
     private User user;
 
     /**

@@ -39,8 +39,8 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public User getUser(Long id) throws RuntimeException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id " + id + " not found"));
+        return userRepository.findById(id).orElse(null);
+
     }
 
     /**
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
                 .map(existing -> {
                     user.setId(id); // ensure consistency
                     return userRepository.save(user);
-                })
-                .orElseThrow(() -> new IllegalArgumentException("Account not found for update."));
+                }).orElse(null);
+
     }
 }

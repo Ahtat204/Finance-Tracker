@@ -22,7 +22,7 @@ public interface TransactionService {
      * @param transaction the transaction entity to create
      * @return the persisted {@link Transaction} with an assigned identifier
      */
-    CompletableFuture<Transaction> createTransaction(Transaction transaction);
+    Transaction createTransaction(Transaction transaction);
 
     /**
      * Deletes an existing {@link Transaction}.
@@ -31,7 +31,7 @@ public interface TransactionService {
      * @return {@code true} if the transaction was successfully deleted,
      *         {@code false} otherwise
      */
-    CompletableFuture<Boolean> deleteTransaction(Long id);
+    Boolean deleteTransaction(Long id);
 
     /**
      * Updates the details of an existing {@link Transaction}.
@@ -39,7 +39,7 @@ public interface TransactionService {
      * @param transaction the transaction entity containing updated information
      * @return the updated {@link Transaction} after persistence
      */
-    CompletableFuture<Transaction> updateTransaction(Long id,Transaction transaction);
+    Transaction updateTransaction(Long id,Transaction transaction);
 
     /**
      * Retrieves a {@link Transaction}.
@@ -51,12 +51,12 @@ public interface TransactionService {
      * @param transactionId the transaction entity to retrieve
      * @return the matching {@link Transaction}, or {@code null} if not found
      */
-  CompletableFuture<  Transaction> getTransaction(Long transactionId) throws RuntimeException;
+   Transaction getTransaction(Long transactionId) throws RuntimeException;
 
     /**
      * Retrieves all {@link Transaction} entities in the system.
      *
      * @return a list of all transactions; may be empty if no transactions exist
      */
-    CompletableFuture<List<Transaction>> getAllTransactions();
+    List<Transaction> getAllTransactions();
 }

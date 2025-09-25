@@ -3,11 +3,9 @@ package org.asue24.financetrackerbackend.services.transaction;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Implementation of the {@link TransactionService} interface.
@@ -42,11 +40,11 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transaction the transaction entity to create
      * @return the persisted transaction with an assigned identifier
      */
-    @Async
+
     @Override
-    public CompletableFuture<Transaction> createTransaction(Transaction transaction) {
+    public Transaction createTransaction(Transaction transaction) {
         var Trans = transactionRepository.save(transaction);
-        return CompletableFuture.completedFuture(transaction);
+        return Trans;
     }
 
     /**
@@ -56,14 +54,14 @@ public class TransactionServiceImpl implements TransactionService {
      * @return {@code true} if the transaction was successfully deleted,
      * {@code false} if it does not exist
      */
-    @Async
+
     @Override
-    public CompletableFuture<Boolean> deleteTransaction(Long id) {
+    public Boolean deleteTransaction(Long id) {
         if (transactionRepository.existsById(id)) {
             transactionRepository.deleteById(id);
-            return CompletableFuture.completedFuture(true);
+            return true;
         }
-        return CompletableFuture.completedFuture(false);
+        return false;
     }
 
     /**
@@ -77,16 +75,16 @@ public class TransactionServiceImpl implements TransactionService {
      * @return the updated transaction after persistence
      * @throws IllegalArgumentException if the transaction does not exist
      */
-    @Async
+
     @Override
-    public CompletableFuture<Transaction> updateTransaction(Long id, Transaction transaction) {
+    public Transaction updateTransaction(Long id, Transaction transaction) {
         var result = transactionRepository.findById(id)
                 .map(existing -> {
                     transaction.setId(id); // ensure consistency
                     return transactionRepository.save(transaction);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for update."));
-        return CompletableFuture.completedFuture(result);
+        return result;
     }
 
     /**
@@ -95,11 +93,11 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionId the ID of the transaction to retrieve
      * @return the transaction if found, or {@code null} if not found
      */
-    @Async
+
     @Override
-    public CompletableFuture<Transaction> getTransaction(Long transactionId) throws RuntimeException {
+    public Transaction getTransaction(Long transactionId) throws RuntimeException {
         var transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
-        return CompletableFuture.completedFuture(transaction);
+        return transaction;
     }
 
     /**
@@ -107,10 +105,10 @@ public class TransactionServiceImpl implements TransactionService {
      *
      * @return a list of all transactions; may be empty if no transactions exist
      */
-    @Async
+
     @Override
-    public CompletableFuture<List<Transaction>> getAllTransactions() {
-        var trans= transactionRepository.findAll();
-        return CompletableFuture.completedFuture(trans);
+    public List<Transaction> getAllTransactions() {
+        var trans = transactionRepository.findAll();
+        return trans;
     }
 }
