@@ -13,7 +13,6 @@ target/
 .springBeans
 .sts4-cache
 
-FinanceTrackerBackend/src/main/resources/application.properties
 FinanceTrackerFrontEnd/src/main/resources/org/asue24/financetrackerfrontend/
 ### IntelliJ IDEA ###
 .idea
