@@ -1,4 +1,4 @@
-package org.asue24.financetrackerfrontend;
+package org.asue24.financetrackerfrontend.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
