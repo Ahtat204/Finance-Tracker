@@ -19,7 +19,7 @@ src/main/ressources/applications.properties
 *.iws
 *.iml
 *.ipr
-
+.env
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

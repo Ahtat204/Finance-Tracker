@@ -20,7 +20,7 @@ public class User {
 
     /** Unique identifier for the user (primary key). */
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", unique = true, nullable = false, updatable = false)
     private Long id;
 
