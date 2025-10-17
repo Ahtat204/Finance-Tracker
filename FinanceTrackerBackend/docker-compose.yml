@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   db:
     image: postgres:13.1-alpine
@@ -15,7 +14,7 @@ services:
   app:
     build:
       context: .
-    image: finance-tracker:1.1
+    image: finance-tracker:1.2
     container_name: app
     depends_on:
       - db
