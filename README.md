@@ -128,3 +128,49 @@ To run all tests:
 ## Docker Containers:
 
 <img src="FinanceTrackerBackend/src/main/resources/Containers.png">
+
+## to test the  API , Install Docker ,if you don't have it already, create a file with "docker-compose.yml" , copy-paste the content below: 
+
+```yaml
+version: '3.9'
+
+services:
+  # --- API Service Configuration ---
+  api:
+    image: lahcen3ahtat/finance-tracker:1.1  # The API's Docker image
+    container_name: app
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    environment:
+      # These environment variables
+      SPRING_DATASOURCE_URL: ${DB_URL} 
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - db # Ensure PostgresSQL starts before the API
+    networks:
+      - app-network
+
+  # ---PostgresSQL database service configuration
+  db:
+     image: postgres:13.1-alpine
+     container_name: db
+     environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${database}
+     ports:
+      - "5432:5432"
+     volumes:
+      - postgres_data:/var/lib/postgresql/data
+# --- Docker Volume for Data Persistence ---
+volumes:
+  mongo-data:
+
+# --- Docker Network for Service Communication ---
+networks:
+  app-network:
+```
+
+## After the image was successfully built , simply run "docker-compose up -d"  and , the API should be running on port 8080
