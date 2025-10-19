@@ -115,3 +115,16 @@ To run all tests:
 ```bash
 ./mvnw test
 ```
+
+
+## Database Diagram:
+
+<img src="FinanceTrackerBackend/DbDiagram.png">
+
+## Backend Project Diagram:
+
+<img src="FinanceTrackerBackend/src/main/resources/FinanceTrackerBackendDiagram.png">
+
+## Docker Containers:
+
+<img src="FinanceTrackerBackend/src/main/resources/Containers.png">
