@@ -8,6 +8,8 @@ jobs:
   build-deploy:
     name: Build and Deploy Spring API
     runs-on: ubuntu-latest
+    env:
+      SPRING_DATASOURCE_URL:${TEST_DB_URL}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,7 +22,6 @@ jobs:
 
       - name: Run Unit Tests
         run: mvn -B test --file pom.xml
-
       - name: Build the App
         run: mvn clean package -B --file pom.xml
 

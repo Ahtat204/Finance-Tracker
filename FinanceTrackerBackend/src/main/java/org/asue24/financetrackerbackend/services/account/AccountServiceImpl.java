@@ -73,12 +73,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account updateAccount(Long id, Account account) {
 
-        if (accountRepository.existsById(id)) {
-            var result = accountRepository.save(account);
-            return result;
-        } else {
-            throw new IllegalArgumentException("Account not found for update.");
-        }
+        var result = accountRepository.findById(id).map(existing->{
+            account.setId(existing.getId());
+            return accountRepository.save(account);
+        }).orElseThrow(()->new RuntimeException("Account not found"));
+        return result;
+
     }
 
     /**
