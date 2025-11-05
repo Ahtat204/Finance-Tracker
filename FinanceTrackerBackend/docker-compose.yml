@@ -8,9 +8,17 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${database}
     ports:
-      - "5432:5432"
+      - "${DATABASE_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  cache:
+    image: redis:7.4-alpine
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - cache:/data
   app:
     build:
       context: .
@@ -25,6 +33,6 @@ services:
        SPRING_PROFILES_ACTIVE = prod
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
-      - "8080:8080"
+      - "${APP_PORT}:8080"
 volumes:
   postgres_data:
