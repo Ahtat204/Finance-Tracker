@@ -96,4 +96,9 @@ public class UserServiceImpl implements UserService {
                 }).orElse(null);
 
     }
+    @Override
+    public User getUserByEmail(String email) {
+        if(email == null || email.isEmpty()) return null;
+        return userRepository.findByEmail(email).orElse(null);
+    }
 }

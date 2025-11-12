@@ -53,4 +53,6 @@ public interface UserService {
      * @return the new and updated User Object
      */
     User updateUser(Long id, User user);
+
+    User getUserByEmail(String email);
 }
