@@ -1,5 +1,7 @@
 package org.asue24.financetrackerbackend.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,17 +22,18 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthDto {
+public class UserRequestDto {
 
     /**
      * The email address provided by the user for authentication.
      * This field serves as the primary identifier for the user's account.
      */
+    @NotBlank
+    @Email(message = "email is mandatory", groups = UserRequestDto.class,regexp = "@")
     private String email;
-
     /**
      * The password provided by the user for authentication.
      * This field should be securely handled and never exposed in logs or insecure environments.
      */
-    private String password;
+    private String HashedPassword;
 }

@@ -5,7 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.asue24.financetrackerbackend.dto.AuthDto;
+import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -110,7 +110,7 @@ public class JwtServiceImpl implements JwtService {
      * @return
      */
     @Override
-    public Boolean validateToken(String token, AuthDto authDto) {
+    public Boolean validateToken(String token, UserRequestDto authDto) {
         var email=extractemail(token);
         return (email.equals(authDto.getEmail()) && !isTokenExpired(token));
     }

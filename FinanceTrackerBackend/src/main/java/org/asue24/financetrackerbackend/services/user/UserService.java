@@ -1,5 +1,7 @@
 package org.asue24.financetrackerbackend.services.user;
 
+import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
+import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.User;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface UserService {
      * @param id the unique identifier of the user
      * @return the {@link User} if found, or {@code RunTimeException} if no account exists with the given ID
      */
-    User getUser(Long id) throws RuntimeException;
+    AuthenticationResponse getUser(UserRequestDto userRequestDto) throws RuntimeException;
 
     /**
      * Deletes an existing {@link User}.

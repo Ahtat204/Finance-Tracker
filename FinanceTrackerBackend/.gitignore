@@ -10,7 +10,7 @@ target/
 .factorypath
 .project
 .settings
-
+Adds-on.txt
 .springBeans
 .sts4-cache
 src/main/ressources/applications.properties

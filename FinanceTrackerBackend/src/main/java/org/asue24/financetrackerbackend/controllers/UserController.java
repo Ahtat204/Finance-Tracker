@@ -31,16 +31,6 @@ public class UserController {
     }
 
     /**
-     *Retrieves a user by his id
-     * @param id the unique identifier of the user
-     * @return a {@link ResponseEntity} with the requested user
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-      return  ResponseEntity.of(Optional.ofNullable(userService.getUser(id)));
-    }
-
-    /**
      *return all users
      * @return {@link ResponseEntity } with a list of all users
      */

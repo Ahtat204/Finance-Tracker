@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 /**
  * Represents an application user who owns accounts.
  * A user has a unique ID, username, email, and password.
@@ -30,6 +32,7 @@ public class User {
 
     /** The unique email address of the user (cannot be updated after creation). */
     @Column(name = "email", nullable = false, length = 50, unique = true, updatable = false)
+
     private String email;
 
     /** The user's password (should be stored in a hashed form). */

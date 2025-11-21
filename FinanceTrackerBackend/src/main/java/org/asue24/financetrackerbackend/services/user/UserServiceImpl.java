@@ -1,7 +1,11 @@
 package org.asue24.financetrackerbackend.services.user;
 
+import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
+import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.UserRepository;
+import org.asue24.financetrackerbackend.security.JwtConfig;
+import org.asue24.financetrackerbackend.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtConfig jwtConfig;
 
     /**
      * Constructs a new {@code UserServiceImpl} with the provided {@link UserRepository}.
@@ -26,8 +31,9 @@ public class UserServiceImpl implements UserService {
      * @param userRepository the repository used to access {@link User} data
      */
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, JwtConfig jwtConfig) {
         this.userRepository = userRepository;
+        this.jwtConfig = jwtConfig;
     }
 
     /**
@@ -38,9 +44,14 @@ public class UserServiceImpl implements UserService {
      * @throws RuntimeException if the user is not found
      */
     @Override
-    public User getUser(Long id) throws RuntimeException {
-        return userRepository.findById(id).orElse(null);
+    public AuthenticationResponse getUser(UserRequestDto userRequestDto) throws RuntimeException {
+        var result= userRepository.findByEmail(userRequestDto.getEmail());
+        if(result==null) throw new RuntimeException("user not found");
+        var isVerified= SecurityConfig.bCryptPasswordEncoder().matches(result.get().getPassword(),userRequestDto.getHashedPassword());
+        if(!isVerified) throw new RuntimeException("verification failed");
 
+        var accessToken= jwtConfig.generateToken(result.get().getEmail());
+        return new AuthenticationResponse(result.get().getEmail(), accessToken);
     }
 
     /**
