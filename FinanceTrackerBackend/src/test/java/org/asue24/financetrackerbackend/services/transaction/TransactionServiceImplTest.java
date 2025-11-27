@@ -5,6 +5,7 @@ import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,8 @@ class TransactionServiceImplTest {
     private TransactionServiceImpl transactionService;
     @Mock
     private TransactionRepository transactionRepository;
+    @Mock
+    private RedisService redisService;
 
     /// ///////////////////////////// happy path
     @Test
