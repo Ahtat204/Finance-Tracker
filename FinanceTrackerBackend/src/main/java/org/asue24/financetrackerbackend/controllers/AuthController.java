@@ -20,6 +20,7 @@ import java.util.Map;
 @RestController()
 @RequestMapping("api/auth")
 public final class AuthController {
+/*
     private final UserService userService;
     private final JwtConfig jwtUtil;
     private AuthenticationManager authenticationManager;
@@ -54,4 +55,5 @@ public final class AuthController {
             throw new RuntimeException(e + "Invalid username or password");
         }
     }
+*/
 }

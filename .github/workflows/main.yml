@@ -9,7 +9,7 @@ jobs:
     name: Build and Deploy Spring API
     runs-on: ubuntu-latest
     env:
-      SPRING_DATASOURCE_URL:${TEST_DB_URL}
+      SPRING_DATASOURCE_URL: ${{ TEST_DB_URL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

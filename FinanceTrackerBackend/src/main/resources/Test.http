@@ -3,15 +3,20 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ###
-GET localhost:8080/api/users
+GET localhost:8080/api/
+Content-Type: application/json
+
+{
+
+}
 ###
 POST localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "username": "Lahcen8ahtat",
-  "email": "lahe28ahtat@gmail.com",
-  "password": "lahce22"
+  "username": "Lah8ahta",
+  "email": "lahe2aat@gmail.com",
+  "password": "lace222"
 }
 ###
 POST localhost:8080/api/accounts
@@ -24,3 +29,8 @@ Content-Type: application/json
     "id": 2122
   }
 }
+###
+DELETE localhost:8080/api/users/11
+Content-Type: application/json
+
+

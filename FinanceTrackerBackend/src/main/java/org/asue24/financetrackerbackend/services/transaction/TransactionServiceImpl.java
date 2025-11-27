@@ -2,6 +2,7 @@ package org.asue24.financetrackerbackend.services.transaction;
 
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,7 +31,7 @@ public class TransactionServiceImpl implements TransactionService {
     /**
      *
      */
-    private final RedisService<Transaction> redisService;
+    private final CachingService<Transaction> redisService;
 
     /**
      * Constructs a new {@code TransactionServiceImpl} with the specified repository.
@@ -38,7 +39,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionRepository the repository used to manage transactions
      */
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository, RedisService redisService) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, CachingService redisService) {
         this.transactionRepository = transactionRepository;
         this.redisService = redisService;
     }
