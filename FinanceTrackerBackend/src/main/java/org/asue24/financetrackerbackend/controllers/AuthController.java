@@ -40,11 +40,11 @@ public final class AuthController {
         var encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         user = userService.createUser(user);
-        var token = jwtUtil.generateToken(user.getUsername());
-        return Collections.singletonMap("jwt-token", token);
+
+        return Collections.singletonMap("","");
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public Map<String, Object> loginHandler(@RequestBody User user) {
         try {
             var authInput = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
