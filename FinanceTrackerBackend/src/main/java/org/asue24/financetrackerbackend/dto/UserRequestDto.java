@@ -29,11 +29,12 @@ public class UserRequestDto {
      * This field serves as the primary identifier for the user's account.
      */
     @NotBlank
-    @Email(message = "email is mandatory", groups = UserRequestDto.class,regexp = "@")
+    @Email(message = "email is mandatory", groups = UserRequestDto.class, regexp = "@")
     private String email;
     /**
      * The password provided by the user for authentication.
      * This field should be securely handled and never exposed in logs or insecure environments.
      */
-    private String HashedPassword;
+    @NotBlank(message = "password cannot be null")
+    private String rawPassword;
 }

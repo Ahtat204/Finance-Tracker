@@ -8,7 +8,6 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -17,8 +16,9 @@ import java.util.Date;
 public class JwtConfig {
     @Value("${jwt_secret}")
     private String secret;
-    public String generateToken(String email)throws IllegalArgumentException , JWTCreationException {
-        return JWT.create().withSubject("User Details").withClaim("email",email).withIssuedAt(new Date()).withIssuer("JOB TRACKER APPLICATION")
+
+    public String generateToken(String email) throws IllegalArgumentException, JWTCreationException {
+        return JWT.create().withSubject("User Details").withClaim("email", email).withIssuedAt(new Date()).withIssuer("JOB TRACKER APPLICATION")
                 .sign(Algorithm.HMAC256(secret));
 
     }
@@ -31,6 +31,6 @@ public class JwtConfig {
                 .build();
 
         DecodedJWT jwt = verifier.verify(token);
-        return jwt.getClaim("username").asString();
+        return jwt.getClaim("email").asString();
     }
 }

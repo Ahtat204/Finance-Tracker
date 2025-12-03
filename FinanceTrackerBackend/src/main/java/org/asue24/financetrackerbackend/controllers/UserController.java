@@ -16,6 +16,7 @@ import java.util.Optional;
  *     Provides endpoints to perform CRUD operations on users
  * </p>
  */
+
 @RestController
 @RequestMapping("api/users")
 public class UserController {
@@ -54,21 +55,6 @@ public class UserController {
         }
         return ResponseEntity.ok(updated);
     }
-
-    /**
-     *create new user
-     * @param user the user to be created
-     * @return a {@link ResponseEntity} with the new created user
-     */
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        var saved = userService.createUser(user);
-        if (saved == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-    }
-
     /**
      *delete a user
      * @param id the unique identifier of the user to be deleted
