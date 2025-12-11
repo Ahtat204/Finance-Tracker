@@ -37,6 +37,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account addAccount(Account account) {
         var Acc = accountRepository.save(account);
+        if(Acc == null) throw new RuntimeException("Account not added");
         return Acc;
     }
 

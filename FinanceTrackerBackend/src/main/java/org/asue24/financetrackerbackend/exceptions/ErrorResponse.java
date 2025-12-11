@@ -1,8 +1,5 @@
 package org.asue24.financetrackerbackend.exceptions;
-
-import java.io.Serializable;
-
-public class ErrorResponse implements Serializable {
+public class ErrorResponse  {
     final long timestamp = System.currentTimeMillis();
     String error;
     String message;

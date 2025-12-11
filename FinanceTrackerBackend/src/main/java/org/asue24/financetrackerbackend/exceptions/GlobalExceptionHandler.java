@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.exceptions;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.asue24.financetrackerbackend.exceptions.customexception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,17 @@ public class GlobalExceptionHandler {
         var errormessage = new ErrorResponse("NOT_FOUND", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errormessage);
     }
-
+/*
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
         ErrorResponse err = new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
+    }
+    */
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthentication(final AuthenticationException ex) {
+        var errormessage = new ErrorResponse("AUTHENTICATION_ERROR", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errormessage);
     }
 }

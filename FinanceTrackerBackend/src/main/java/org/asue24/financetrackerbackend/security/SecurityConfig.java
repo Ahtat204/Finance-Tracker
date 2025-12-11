@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.asue24.financetrackerbackend.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,13 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final UserService userService;
+
     private final JwtFilter jwtFilter;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
-    public SecurityConfig(UserService userService, JwtFilter jwtFilter) {
-        this.userService = userService;
+    public SecurityConfig( JwtFilter jwtFilter, UserDetailsService userDetailsService) {
+
         this.jwtFilter = jwtFilter;
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -51,9 +54,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        var authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
         return authenticationManagerBuilder.build();
     }
+
 }
