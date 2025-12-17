@@ -1,4 +1,5 @@
 package org.asue24.financetrackerbackend.security;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -6,19 +7,28 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
-import org.asue24.financetrackerbackend.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
+
+/**
+ * Filter responsible for validating JWT
+ * tokens on incoming HTTP requests.
+ * * It intercepts requests, extracts the Bearer token,
+ * validates it, and sets the * authentication in
+ * the SecurityContext if the token is valid.
+ */
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userService;
     private final JwtService jwtService;
+
     @Autowired
     public JwtFilter(UserDetailsService userService, JwtService jwtService) {
         this.userService = userService;
@@ -26,9 +36,13 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     /**
-     * @param request
-     * @return
+     * /** * Determines whether the given request should be excluded from filtering.
+     *  This implementation excludes all paths starting with "/api/auth".
+     *  @param request The incoming HttpServletRequest.
+     *  @return true if the request path starts with "/api/auth", false otherwise.
+     *  @throws ServletException If an error occurs during the check.
      * @throws ServletException
+     * @throws IOException
      */
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -36,13 +50,15 @@ public class JwtFilter extends OncePerRequestFilter {
         return path.startsWith("/api/auth");
     }
 
-    /**
-     * @param request
-     * @param response
-     * @param filterChain
-     * @throws ServletException
-     * @throws IOException
-     */
+
+    /** * Processes the incoming request to check for a valid JWT token.
+     *  If a valid token is found, the user details are loaded and the authentication
+     *  is set in the Spring Security Context.
+     *  @param request The current HTTP request.
+     *  @param response The current HTTP response.
+     *  @param filterChain The chain of remaining filters to execute.
+     *  @throws ServletException If a servlet-related error occurs.
+     *  @throws IOException If an I/O error occurs (e.g., writing the error response). */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var AuthHeader = request.getHeader("Authorization");

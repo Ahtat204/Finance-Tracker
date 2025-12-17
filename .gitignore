@@ -12,14 +12,14 @@ target/
 .settings
 .springBeans
 .sts4-cache
-
+*.secrets
 FinanceTrackerFrontEnd/src/main/resources/org/asue24/financetrackerfrontend/
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
-
+*.log
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
