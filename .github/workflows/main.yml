@@ -1,4 +1,4 @@
-name: CI/CD pipeline to DockerHub
+name: Build,Test and Push to DockerHub
 on:
   push:
     branches:

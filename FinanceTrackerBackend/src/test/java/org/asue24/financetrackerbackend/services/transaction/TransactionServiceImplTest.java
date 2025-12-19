@@ -5,6 +5,7 @@ import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,8 @@ class TransactionServiceImplTest {
     @Mock
     private TransactionRepository transactionRepository;
 
+    @Mock
+    private RedisService<Transaction> redisService;
     /// ///////////////////////////// happy path
     @Test
     void createTransaction() {
@@ -72,5 +75,5 @@ class TransactionServiceImplTest {
         assertNotNull(result);
         assertEquals(transactions, result);
     }
-    /////////////
+    ///////////// Edge Cases
 }
