@@ -25,7 +25,6 @@ import java.util.function.Function;
 public class JwtServiceImpl implements JwtService {
     @Value("${jwt_secret}")
     private String JwtSecret;
-
     /**
      * Generates a standard JWT for a specific user email.
      *
@@ -36,7 +35,6 @@ public class JwtServiceImpl implements JwtService {
         var claims = new HashMap<String, Object>();
         return createJwt(claims, email);
     }
-
     /**
      * Creates a JWT with specific claims and a subject. * Currently sets an expiration time of 30 minutes from the time of issuance.
      *

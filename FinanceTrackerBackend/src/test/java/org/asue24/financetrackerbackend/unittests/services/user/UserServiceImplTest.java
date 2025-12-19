@@ -1,9 +1,10 @@
-package org.asue24.financetrackerbackend.services.user;
+package org.asue24.financetrackerbackend.unittests.services.user;
 
 import org.asue24.financetrackerbackend.dto.CreateUserDto;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.UserRepository;
+import org.asue24.financetrackerbackend.services.user.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
