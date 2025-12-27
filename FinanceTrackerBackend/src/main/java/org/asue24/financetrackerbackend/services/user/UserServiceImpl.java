@@ -122,4 +122,9 @@ public class UserServiceImpl implements UserService {
         if (email == null || email.isEmpty()) return null;
         return userRepository.findByEmail(email).orElse(null);
     }
+
+
+    public void DeleteAllUsers() {
+        userRepository.deleteAll();
+    }
 }

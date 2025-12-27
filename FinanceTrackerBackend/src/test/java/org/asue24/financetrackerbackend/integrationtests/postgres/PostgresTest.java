@@ -12,22 +12,22 @@ import org.testcontainers.utility.DockerImageName;
 public  class PostgresTest {
     @Container
     private static final PostgreSQLContainer<?> postgresContainer =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:13.1-alpine"))
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
                     .withExposedPorts(5432)
                     .withUsername("test")
                     .withPassword("test")
                     .withClasspathResourceMapping("init.sql",
                             "/docker-entrypoint-initdb.d/init.sql",
                             BindMode.READ_ONLY);
-    private static String ConnectionString=String.format("jdbc:postgresql://%s:%s/financetracker",
-            postgresContainer.getHost(),
-            postgresContainer.getFirstMappedPort());
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", ()->PostgresTest.ConnectionString);
+        registry.add("spring.datasource.url", PostgresTest::getFormattedConnectionString);
         registry.add("spring.datasource.username",postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
     }
-
-
+    private static String getFormattedConnectionString() {
+        return String.format("jdbc:postgresql://%s:%s/financetracker",
+                postgresContainer.getHost(),
+                postgresContainer.getFirstMappedPort());
+    }
 }
