@@ -43,6 +43,8 @@ public interface AccountService {
      */
     Account updateAccount(Long id,Account account);
 
+    double UpdateAccount(Long id,double amount);
+
     /**
      * Retrieves an {@link Account} by its unique identifier.
      *

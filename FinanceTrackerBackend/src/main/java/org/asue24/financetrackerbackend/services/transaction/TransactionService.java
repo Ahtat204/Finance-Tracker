@@ -1,4 +1,5 @@
 package org.asue24.financetrackerbackend.services.transaction;
+import org.asue24.enums.TransactionType;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.springframework.web.client.HttpClientErrorException;
 

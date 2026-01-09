@@ -1,7 +1,10 @@
 package org.asue24.financetrackerbackend.services.transaction;
 
+import jakarta.transaction.Transactional;
+import org.asue24.enums.TransactionType;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.account.AccountService;
 import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import java.util.List;
  * Interacts with {@link TransactionRepository} to persist and fetch data from the database.
  * </p>
  */
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
@@ -33,15 +37,17 @@ public class TransactionServiceImpl implements TransactionService {
      */
     private final CachingService<Transaction> redisService;
 
+    private final AccountService accountService;
     /**
      * Constructs a new {@code TransactionServiceImpl} with the specified repository.
      *
      * @param transactionRepository the repository used to manage transactions
      */
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository, CachingService redisService) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, CachingService redisService, AccountService accountService) {
         this.transactionRepository = transactionRepository;
         this.redisService = redisService;
+        this.accountService = accountService;
     }
 
     /**
@@ -51,9 +57,12 @@ public class TransactionServiceImpl implements TransactionService {
      * @return the persisted transaction with an assigned identifier
      */
    // @CachePut(value = "transactions", key = "#result.id")
+    @Transactional
     @Override
     public Transaction createTransaction(Transaction transaction) {
         var Trans = transactionRepository.save(transaction);
+        var AccountId=Trans.getAccount().getId();
+        accountService.UpdateAccount(AccountId,transaction.getAmount());
         redisService.put(Trans.getId().toString(), Trans);
         return Trans;
     }
@@ -110,7 +119,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction getTransaction(Long transactionId) throws RuntimeException {
         var cached = redisService.get(transactionId.toString());
-        if (cached != null) return (Transaction) cached;
+        if (cached != null) return  cached;
         var transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         redisService.put(transactionId.toString(), transaction);
