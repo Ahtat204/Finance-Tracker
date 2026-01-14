@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.asue24</groupId>
     <artifactId>FinanceTrackerBackend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.3</version>
     <name>FinanceTrackerBackend</name>
     <description>FinanceTrackerBackend</description>
     <url/>
@@ -115,6 +115,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <finalName>spring-backend</finalName>
     </build>
 
 </project>

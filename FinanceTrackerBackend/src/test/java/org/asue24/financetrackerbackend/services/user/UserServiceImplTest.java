@@ -19,7 +19,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    User user=new User(23L, "test", "test", "test");;
+    User user = new User(22L,"lahcen", "lahcenhhh", "ahtat", "hereweare");
     @InjectMocks
     private UserServiceImpl userServiceImpl;
     @Mock
@@ -44,7 +44,7 @@ class UserServiceImplTest {
 
     @Test
     void getAllUsers_returnAllUsers() {
-        var users = List.of(new User(23L, "test", "test", "test"), new User(24L, "test2", "test2", "test2"));
+        var users = List.of(new User(22L,"lahcen", "lahcenhhh", "ahtat", "hereweare"), new User(22L,"lahcen", "lahcenhhh", "ahtat", "hereweare"));
         when(userRepository.findAll()).thenReturn(users);
         var result = userServiceImpl.getAllUsers();
         Assertions.assertEquals(users, result);
@@ -64,7 +64,7 @@ class UserServiceImplTest {
         var result = userServiceImpl.updateUser(23L, user);
         Assertions.assertEquals(user, result);
         Assertions.assertEquals(user.getId(), result.getId());
-        Assertions.assertEquals(user.getUsername(), result.getUsername());
+        Assertions.assertEquals(user.getFirstname(), result.getFirstname());
         verify(userRepository).findById(23L);
         verify(userRepository).save(user);
     }
