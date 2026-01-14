@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+
 /**
  * Represents an application user who owns accounts.
  * A user has a unique ID, username, email, and password.
@@ -12,7 +14,6 @@ import lombok.NoArgsConstructor;
  * with them. The email is unique and immutable once created.</p>
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "Users")
 @Table(name = "Users")
@@ -24,9 +25,13 @@ public class User {
     @Column(name = "user_id", unique = true, nullable = false, updatable = false)
     private Long id;
 
-    /** The username chosen by the user. */
-    @Column(name = "user_name", nullable = false, length = 50)
-    private String username;
+    /** The firstname of the user. */
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstname;
+
+    /** The lastname of the user. */
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastname;
 
     /** The unique email address of the user (cannot be updated after creation). */
     @Column(name = "email", nullable = false, length = 50, unique = true, updatable = false)
@@ -35,16 +40,35 @@ public class User {
     /** The user's password (should be stored in a hashed form). */
     @Column(name = "password", nullable = false, length = 100)
     private String password;
+    public User(Long id,String firstname, String lastname,String email, String password) {
+        this.firstname = firstname;
+        this.email = email;
+        this.id=id;
+        this.password = password;
+        this.lastname = lastname;
+    }
     /**
      * Constructs a new User with the given details.
      *
-     * @param username the username
+     * @param firstname the username
      * @param email the email address
      * @param password the password
      */
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String firstname, String lastname,String email, String password) {
+        this.firstname = firstname;
+        this.email = email;
+        this.password = password;
+        this.lastname = lastname;
+    }
+    public User(String firstname, String lastname,String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+    }
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
     }
+
 }
+

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceImplTest {
-    User user = new User(22L, "lahcenhhh", "ahtat", "hereweare");
+    User user = new User(22L,"lahcen", "lahcenhhh", "ahtat", "hereweare");
     Account account = new Account(1L, "lahcen", 22.2, user);
     private Transaction trans = new Transaction(22L,1.22,LocalDate.now(),"desc",TransactionType.EXPENSE,account);
 

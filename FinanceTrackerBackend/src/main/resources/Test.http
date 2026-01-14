@@ -3,7 +3,7 @@ GET https://examples.http-client.intellij.net/get
     ?generated-in=IntelliJ IDEA
 
 ###
-GET localhost:8080/api/
+GET localhost:8080/api/users
 Content-Type: application/json
 
 {
