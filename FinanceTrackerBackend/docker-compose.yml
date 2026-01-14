@@ -6,18 +6,17 @@ services:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${database}
-    ports:
-      - "${DATABASE_PORT}:5432"
+    networks:
+      - finance-tracker
     volumes:
       - postgres_data:/var/lib/postgresql/data
   cache:
     image: redis:7.4-alpine
     restart: always
-    ports:
-      - "${REDIS_PORT}:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_cache:/var/lib/data
+    networks:
+      - finance-tracker
   app:
     build:
       context: .
@@ -35,6 +34,14 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "${APP_PORT}:8080"
+    networks:
+      - finance-tracker
+
 volumes:
   postgres_data:
   redis_cache:
+networks:
+  finance-tracker:
+      driver: bridge
+
+

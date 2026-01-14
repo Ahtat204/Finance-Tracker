@@ -1,7 +1,7 @@
 package org.asue24.financetrackerbackend.controllers;
 
 import org.asue24.financetrackerbackend.entities.User;
-import org.asue24.financetrackerbackend.security.JwtConfig;
+
 import org.asue24.financetrackerbackend.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

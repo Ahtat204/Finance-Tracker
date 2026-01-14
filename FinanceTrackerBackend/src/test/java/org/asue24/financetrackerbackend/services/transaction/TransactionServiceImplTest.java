@@ -32,6 +32,8 @@ class TransactionServiceImplTest {
     @Mock
     private RedisService redisService;
 
+    @Mock
+    private RedisService<Transaction> redisService;
     /// ///////////////////////////// happy path
     @Test
     void createTransaction() {
@@ -75,5 +77,5 @@ class TransactionServiceImplTest {
         assertNotNull(result);
         assertEquals(transactions, result);
     }
-    /////////////
+    ///////////// Edge Cases
 }
