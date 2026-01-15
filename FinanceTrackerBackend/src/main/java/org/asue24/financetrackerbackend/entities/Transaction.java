@@ -81,10 +81,5 @@ public class Transaction {
         Description = description;
         Transactiontype = transactiontype;
     }
-
-    public Transaction(long l, double v) {
-        this.Id=l;
-        this.amount=v;
-    }
 }
 
