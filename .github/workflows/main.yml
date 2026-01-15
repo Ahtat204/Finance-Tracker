@@ -43,7 +43,7 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
-          context: ./FinanceTrackerBackend
-          file: ./FinanceTrackerBackend/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/spring-boot-api:latest
+           context: ./FinanceTrackerBackend
+           file: ./FinanceTrackerBackend/Dockerfile
+           push: true
+           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/spring-boot-api:latest

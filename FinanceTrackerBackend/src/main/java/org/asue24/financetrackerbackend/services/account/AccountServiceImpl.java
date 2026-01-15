@@ -5,11 +5,10 @@ import org.asue24.financetrackerbackend.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+
 
 /**
  * Implementation of the {@link AccountService} interface.
@@ -106,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
      *
      * @return a list of all accounts
      */
-    @Async
+
     @Override
     public List<Account> getAccounts() {
         var accounts = accountRepository.findAll();
