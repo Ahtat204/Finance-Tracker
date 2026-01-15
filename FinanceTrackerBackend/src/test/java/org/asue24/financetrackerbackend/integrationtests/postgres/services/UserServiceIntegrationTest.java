@@ -9,6 +9,8 @@ import org.asue24.financetrackerbackend.integrationtests.postgres.PostgresTest;
 import org.asue24.financetrackerbackend.repositories.UserRepository;
 import org.asue24.financetrackerbackend.services.user.UserService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +31,12 @@ public class UserServiceIntegrationTest extends PostgresTest {
     @Autowired
     private UserRepository userRepository;
 
+    private CreateUserDto createUserDto;
+
+    @BeforeEach
+     void setUpBeforeClass() throws Exception {
+        createUserDto=new CreateUserDto("lahcen","lhdh","lhce@gmail.com","password");
+    }
     @AfterEach
     public void tearDown() {
         userRepository.deleteAll();
@@ -55,12 +63,13 @@ public class UserServiceIntegrationTest extends PostgresTest {
     }
 
     @Test
-    public void AuthenticateUserTest_ShouldReturnToken() {
+    public void GetUserByEmailTest_ShouldReturnNonNullUser() {
         var User = new User("lahcen", "John", "Do@gmail.com", "lahce5452");
-        var UserRequest = new UserRequestDto(User.getEmail(), User.getPassword());
-        var request=userRepository.save(User);
-        var response=restTemplate.postForObject("/api/auth/login", UserRequest, AuthenticationResponse.class);
-        assertThat(response.email()).isNotNull();
-        assertThat(response.jwtToken()).isNotNull();
+        var request=userService.createUser(createUserDto);
+        var user3=userService.getUserByEmail(request.getEmail());
+        assertThat(user3.getEmail()).isNotNull();
+        assertThat(user3.getPassword()).isNotNull();
+        assertThat(user3.getPassword()).isNotEqualTo(request.getPassword());
+        assertThat(user3.getEmail()).isEqualTo(request.getEmail());
     }
 }
