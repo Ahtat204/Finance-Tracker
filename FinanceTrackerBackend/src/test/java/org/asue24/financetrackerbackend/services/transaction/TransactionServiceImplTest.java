@@ -31,9 +31,6 @@ class TransactionServiceImplTest {
     private TransactionRepository transactionRepository;
     @Mock
     private RedisService redisService;
-
-    @Mock
-    private RedisService<Transaction> redisService;
     /// ///////////////////////////// happy path
     @Test
     void createTransaction() {
