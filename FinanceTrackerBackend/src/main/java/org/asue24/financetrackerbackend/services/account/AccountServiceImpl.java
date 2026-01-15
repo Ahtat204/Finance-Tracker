@@ -3,11 +3,12 @@ package org.asue24.financetrackerbackend.services.account;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.repositories.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+
 
 /**
  * Implementation of the {@link AccountService} interface.
@@ -34,6 +35,7 @@ public class AccountServiceImpl implements AccountService {
      * @return the saved account with its generated ID
      */
 
+    @CachePut(value = "accounts",key = "#result.id")
     @Override
     public Account addAccount(Account account) {
         var Acc = accountRepository.save(account);
@@ -49,6 +51,7 @@ public class AccountServiceImpl implements AccountService {
      * {@code false} if the account does not exist
      */
 
+    @CacheEvict(value="accounts",key ="#id")
     @Override
     public Boolean deleteAccount(Long id) {
         if (accountRepository.existsById(id)) {
@@ -71,6 +74,7 @@ public class AccountServiceImpl implements AccountService {
      * @throws IllegalArgumentException if the account does not exist
      */
 
+    @CachePut(value = "accounts",key = "#id")
     @Override
     public Account updateAccount(Long id, Account account) {
 
@@ -102,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
      *
      * @return a list of all accounts
      */
-    @Async
+
     @Override
     public List<Account> getAccounts() {
         var accounts = accountRepository.findAll();
