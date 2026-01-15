@@ -1,4 +1,4 @@
-package org.asue24.financetrackerbackend.integrationtest;
+package org.asue24.financetrackerbackend.integrationtests.postgres;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers()
 public  class PostgresTest {
     @Container
-    public static final PostgreSQLContainer<?> postgresContainer =
+    private static final PostgreSQLContainer<?> postgresContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
                     .withExposedPorts(5432)
                     .withUsername("test")

@@ -1,5 +1,6 @@
 package org.asue24.financetrackerbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class Account {
     /** The user who owns this account. */
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = User.class)
     @JoinColumn(name = "user_id")
+    @JsonIgnore()
     private User user;
 
     /**

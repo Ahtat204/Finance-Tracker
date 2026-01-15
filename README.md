@@ -1,6 +1,4 @@
-# ahtat204/finance-tracker: Personal Finance Tracker 💸 ![Status](https://img.shields.io/badge/status-ongoing-green?style=for-the-badge)
-
-
+# ahtat204/finance-tracker: Personal Finance Tracker 💸
 
 The **Finance Tracker** is a full-stack application designed to help users manage their personal finances, track transactions, and monitor accounts. It is built using a **microservices architecture** with a distinct **Spring Boot backend** and a **JavaFX frontend**, all managed by **Maven**.
 
@@ -11,7 +9,6 @@ The **Finance Tracker** is a full-stack application designed to help users manag
 | **Backend** | **Java 17, Spring Boot 3.x** | Provides the REST API, business logic, and persistence layer. |
 | **Frontend** | **Java 17, JavaFX** | A desktop application providing the user interface. |
 | **Database** | **PostgreSQL** | Relational database for storing user, account, and transaction data. |
-| **Cache** | **Redis** | Key-Value NoSQL database for ultra-fast data access. |
 | **Build Tool** | **Maven** | Manages dependencies and the multi-module project structure. |
 | **Containerization** | **Docker** & **Docker Compose** | Used for easy setup and deployment of the backend and database. |
 

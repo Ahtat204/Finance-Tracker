@@ -2,12 +2,7 @@ package org.asue24.financetrackerbackend.services.transaction;
 
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
-import org.asue24.financetrackerbackend.services.caching.CachingService;
-import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +23,6 @@ public class TransactionServiceImpl implements TransactionService {
      */
 
     private final TransactionRepository transactionRepository;
-    /**
-     *
-     */
-    private final CachingService<Transaction> redisService;
 
     /**
      * Constructs a new {@code TransactionServiceImpl} with the specified repository.
@@ -39,9 +30,8 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionRepository the repository used to manage transactions
      */
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository, CachingService redisService) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository) {
         this.transactionRepository = transactionRepository;
-        this.redisService = redisService;
     }
 
     /**
@@ -50,11 +40,10 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transaction the transaction entity to create
      * @return the persisted transaction with an assigned identifier
      */
-   // @CachePut(value = "transactions", key = "#result.id")
+
     @Override
     public Transaction createTransaction(Transaction transaction) {
         var Trans = transactionRepository.save(transaction);
-        redisService.put(Trans.getId().toString(), Trans);
         return Trans;
     }
 
@@ -65,12 +54,11 @@ public class TransactionServiceImpl implements TransactionService {
      * @return {@code true} if the transaction was successfully deleted,
      * {@code false} if it does not exist
      */
-   // @CacheEvict(value = "transactions", key = "#id")
+
     @Override
     public Boolean deleteTransaction(Long id) {
         if (transactionRepository.existsById(id)) {
             transactionRepository.deleteById(id);
-            redisService.Evict(id.toString());
             return true;
         }
         return false;
@@ -87,7 +75,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @return the updated transaction after persistence
      * @throws IllegalArgumentException if the transaction does not exist
      */
-   // @CachePut(value = "transactions", key = "#id")
+
     @Override
     public Transaction updateTransaction(Long id, Transaction transaction) {
         var result = transactionRepository.findById(id)
@@ -96,7 +84,6 @@ public class TransactionServiceImpl implements TransactionService {
                     return transactionRepository.save(transaction);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for update."));
-        redisService.put(id.toString(), result);
         return result;
     }
 
@@ -106,14 +93,10 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionId the ID of the transaction to retrieve
      * @return the transaction if found, or {@code null} if not found
      */
-   // @Cacheable(value = "transactions", key = "#transactionId")
+
     @Override
     public Transaction getTransaction(Long transactionId) throws RuntimeException {
-        var cached = redisService.get(transactionId.toString());
-        if (cached != null) return (Transaction) cached;
-        var transaction = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        redisService.put(transactionId.toString(), transaction);
+        var transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
         return transaction;
     }
 
