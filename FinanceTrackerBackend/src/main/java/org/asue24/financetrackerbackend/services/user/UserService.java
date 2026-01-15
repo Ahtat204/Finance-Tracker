@@ -58,4 +58,5 @@ public interface UserService {
     User updateUser(Long id, User user);
 
     User getUserByEmail(String email);
+    User getUserById(Long id);
 }

@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.integrationtests.postgres.services;
 
 
+import org.assertj.core.api.Assertions;
 import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
 import org.asue24.financetrackerbackend.dto.CreateUserDto;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
@@ -35,7 +36,7 @@ public class UserServiceIntegrationTest extends PostgresTest {
 
     @BeforeEach
      void setUpBeforeClass() throws Exception {
-        createUserDto=new CreateUserDto("lahcen","lhdh","lhce@gmail.com","password");
+        createUserDto=new CreateUserDto("lahcen","lhdh","lahcen28ahtat@gmail","1234password");
     }
     @AfterEach
     public void tearDown() {
@@ -50,7 +51,6 @@ public class UserServiceIntegrationTest extends PostgresTest {
         restTemplate.postForObject("/users", User1, User.class);
         restTemplate.postForObject("/users", User2, User.class);
         var response = restTemplate.getForEntity("/users", String.class);
-        var responseBody = response.getBody();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED); //tests that users is a protected endpoint
     }
 
@@ -71,5 +71,37 @@ public class UserServiceIntegrationTest extends PostgresTest {
         assertThat(user3.getPassword()).isNotNull();
         assertThat(user3.getPassword()).isNotEqualTo(request.getPassword());
         assertThat(user3.getEmail()).isEqualTo(request.getEmail());
+    }
+
+    @Test
+    public void GetUserByEmailTest_ShouldReturnNullUser() {
+        var request=userService.createUser(createUserDto);
+        var user3=userService.getUserByEmail("someemail@gmail.com");
+        assertThat(user3).isNull();
+    }
+    @Test
+    public void GetUserByIdTest_ShouldReturnNonNullUser() {
+        var request=userRepository.save(new User("lahcen", "John", "Do@gmail.com", "lahce5452"));
+        var Id=request.getId();
+        var result=userService.getUserById(Id);
+        Assertions.assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isNotNull();
+        assertThat(result.getPassword()).isNotNull();
+        assertThat(result.getPassword()).isEqualTo(request.getPassword());
+    }
+
+    @Test
+    public void AuthenticateNonExistingUserTest_ShouldReturnNullUser() {
+         var result =restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail","1234password"), AuthenticationResponse.class);
+         Assertions.assertThat(result).isNull();
+    }
+
+    @Test
+    public void RegisterThenLoginUserTest(){
+        var user=restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
+        var result=restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail","1234password") , AuthenticationResponse.class);
+        Assertions.assertThat(result).isNotNull();
+        assertThat(result.email()).isEqualTo(createUserDto.email());
+
     }
 }
