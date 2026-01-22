@@ -39,6 +39,7 @@ jobs:
 
       - name: Build and Test
         run: |
+          export jwt_secret=env.JWT_SECRET
           chmod +x mvnw
           ./mvnw clean package -B --file pom.xml -X
         working-directory: ./FinanceTrackerBackend
