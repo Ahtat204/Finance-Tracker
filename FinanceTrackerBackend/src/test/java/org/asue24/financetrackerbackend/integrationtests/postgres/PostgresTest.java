@@ -9,22 +9,24 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers()
-public  class PostgresTest {
+public class PostgresTest {
     @Container
     private static final PostgreSQLContainer<?> postgresContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-                    .withExposedPorts(5432)
+                    .withExposedPorts(5432, 63140, 50605).withAccessToHost(true)
                     .withUsername("test")
                     .withPassword("test")
                     .withClasspathResourceMapping("init.sql",
                             "/docker-entrypoint-initdb.d/init.sql",
                             BindMode.READ_ONLY);
+
     @DynamicPropertySource
-    static void postgresProperties(DynamicPropertyRegistry registry){
+    static void postgresProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", PostgresTest::getFormattedConnectionString);
-        registry.add("spring.datasource.username",postgresContainer::getUsername);
+        registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
     }
+
     private static String getFormattedConnectionString() {
         return String.format("jdbc:postgresql://%s:%s/financetracker",
                 postgresContainer.getHost(),
