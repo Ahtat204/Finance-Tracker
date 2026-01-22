@@ -17,7 +17,7 @@ jobs:
     env:
       SPRING_DATASOURCE_URL: ${{ secrets.TEST_DB_URL }}
       SPRING_PROFILES_ACTIVE: test
-      JWT_SECRET: $${ secrets.JWT_KEY }}
+      JWT_SECRET: ${{ secrets.JWT_KEY }}
 
     steps:
       - name: Checkout code
@@ -39,7 +39,8 @@ jobs:
 
       - name: Build and Test
         run: |
-          export jwt_secret=env.JWT_SECRET
+          export jwt_secret=${{ secrets.JWT_KEY }}
+          export SPRING_ENVIRONMENT=test
           chmod +x mvnw
           ./mvnw clean package -B --file pom.xml -X
         working-directory: ./FinanceTrackerBackend
