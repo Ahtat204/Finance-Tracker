@@ -1,8 +1,9 @@
-package org.asue24.financetrackerbackend.services.account;
+package org.asue24.financetrackerbackend.unittests.services.account;
 
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.AccountRepository;
+import org.asue24.financetrackerbackend.services.account.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplTest {
 
-    User user = new User(22L, "lahcenhhh", "ahtat", "hereweare");
+    User user = new User("heerewego", "lahcenhhh", "ahtat", "hereweare");
     Account account = new Account(1L, "lahcen", 22.2, user);
 
     @InjectMocks
@@ -67,6 +68,4 @@ class AccountServiceImplTest {
         assertNotNull(result);
         assertEquals(result, accounts);
     }
-
-
 }
