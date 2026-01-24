@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
  * with them. The email is unique and immutable once created.</p>
  */
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "Users")
 @Table(name = "Users")
@@ -40,13 +41,6 @@ public class User {
     /** The user's password (should be stored in a hashed form). */
     @Column(name = "password", nullable = false, length = 100)
     private String password;
-    public User(Long id,String firstname, String lastname,String email, String password) {
-        this.firstname = firstname;
-        this.email = email;
-        this.id=id;
-        this.password = password;
-        this.lastname = lastname;
-    }
     /**
      * Constructs a new User with the given details.
      *
@@ -69,6 +63,4 @@ public class User {
         this.email = email;
         this.password = password;
     }
-
 }
-
