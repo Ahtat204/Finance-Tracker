@@ -34,10 +34,10 @@ public class SpringBootIntegrationTest extends PostgresTest{
     }
     @Test
     public void GetAndSetTest() {
-        var Tras = new Transaction(1L, 22.3);
-        redisService.put(Tras.getId().toString(), Tras);
-        Assertions.assertNotNull(redisService.get(Tras.getId().toString()));
-        Assertions.assertEquals(Tras.getId(), redisService.get(Tras.getId().toString()).getId());
-        Assertions.assertEquals(Tras.getAmount(), redisService.get(Tras.getId().toString()).getAmount());
+        var Trans = new Transaction(1L, 22.3);
+        redisService.put(Trans.getId().toString(), Trans);
+        Assertions.assertNotNull(redisService.get(Trans.getId().toString()));
+        Assertions.assertEquals(Trans.getId(), redisService.get(Trans.getId().toString()).getId());
+        Assertions.assertEquals(Trans.getAmount(), redisService.get(Trans.getId().toString()).getAmount());
     }
 }
