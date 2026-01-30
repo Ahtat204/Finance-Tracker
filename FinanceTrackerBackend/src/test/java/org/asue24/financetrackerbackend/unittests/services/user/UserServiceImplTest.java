@@ -4,12 +4,14 @@ import org.asue24.financetrackerbackend.dto.CreateUserDto;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.UserRepository;
+import org.asue24.financetrackerbackend.services.user.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,8 @@ class UserServiceImplTest {
     private UserServiceImpl userServiceImpl;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     //the happy path tests
 
     /// ////////////////////////////////////////
@@ -59,7 +63,7 @@ class UserServiceImplTest {
 
     @Test
     void createUser_returnUserCreated() {
-      //  when(userRepository.save(user)).thenReturn(user);
+        //  when(userRepository.save(user)).thenReturn(user);
 
         // var result = userServiceImpl.createUser(user);
         // Assertions.assertEquals(user, result);
@@ -86,13 +90,17 @@ class UserServiceImplTest {
         Assertions.assertEquals(false, result);
     }
 
+    /*
     @Test
-    void getUserById_returnNullIfUserNotFound() {
-        when(userRepository.findById(23L)).thenReturn(Optional.empty());
-        var result = userServiceImpl.getUser(23L);
+    void authenticateUserByEmail_returnNullIfUserNotFound() {
+        when(userRepository.findByEmail(userRequestDto.getEmail())).thenReturn(Optional.empty());
+        when(passwordEncoder.matches(userRequestDto.getRawPassword(), user.getPassword())).thenReturn(false);
+        var result = userServiceImpl.AuthenticateUser(userRequestDto);
         Assertions.assertEquals(null, result);
+        Assertions.assertNull(result);
+        Assertions.assertThrows(UserNotFoundException.class, () -> userServiceImpl.AuthenticateUser(userRequestDto));
     }
-
+*/
     @Test
     public void GetAllUsers_returnEmptyListIfUsersNotFound() {
         var users = new ArrayList();

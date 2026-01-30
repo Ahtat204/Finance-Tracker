@@ -1,5 +1,6 @@
-package org.asue24.financetrackerbackend.integrationtests.postgres;
+package org.asue24.financetrackerbackend;
 
+import com.redis.testcontainers.RedisContainer;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.BindMode;
@@ -9,22 +10,27 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers()
-public class PostgresTest {
+
+public class TestDependencies {
     @Container
-    private static final PostgreSQLContainer<?> postgresContainer =
+    protected static final PostgreSQLContainer<?> postgresContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-                    .withExposedPorts(5432, 63140, 50605).withAccessToHost(true)
+                    .withExposedPorts(5432).withAccessToHost(true)
                     .withUsername("test")
                     .withPassword("test")
                     .withClasspathResourceMapping("init.sql",
                             "/docker-entrypoint-initdb.d/init.sql",
                             BindMode.READ_ONLY);
+    @Container
+    static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:latest")).withExposedPorts(6379);
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", PostgresTest::getFormattedConnectionString);
+        registry.add("spring.datasource.url", TestDependencies::getFormattedConnectionString);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", redis::getFirstMappedPort);
     }
 
     private static String getFormattedConnectionString() {

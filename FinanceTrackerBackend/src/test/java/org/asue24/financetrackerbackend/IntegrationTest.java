@@ -1,16 +1,16 @@
-package org.asue24.financetrackerbackend.integrationtests.postgres.services;
-
+package org.asue24.financetrackerbackend;
 
 import org.assertj.core.api.Assertions;
 import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
 import org.asue24.financetrackerbackend.dto.CreateUserDto;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
+import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;
-import org.asue24.financetrackerbackend.integrationtests.postgres.PostgresTest;
 import org.asue24.financetrackerbackend.repositories.UserRepository;
+import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.asue24.financetrackerbackend.services.user.UserService;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +21,52 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserServiceIntegrationTest extends PostgresTest {
+@ActiveProfiles("test")
+public class IntegrationTest extends TestDependencies {
 
+    @Autowired
+    public RedisService<Transaction> redisService;
     @Autowired
     TestRestTemplate restTemplate;
     @Autowired
     private UserService userService;
     @Autowired
     private UserRepository userRepository;
-
     private CreateUserDto createUserDto;
-
-    @BeforeEach
-     void setUpBeforeClass() throws Exception {
-        createUserDto=new CreateUserDto("lahcen","lhdh","lahcen28ahtat@gmail","1234password");
-    }
     @AfterEach
     public void tearDown() {
         userRepository.deleteAll();
     }
+    @BeforeEach
+    void setUpBeforeClass() throws Exception {
+        createUserDto=new CreateUserDto("lahcen","lhdh","lahcen28ahtat@gmail","1234password");
+    }
+    /*
+     @BeforeAll
+     public static void init() {
+         System.setProperty("spring.data.redis.host", redis.getHost());
+         System.setProperty("spring.data.redis.port", redis.getMappedPort(6379).toString());
+     }
 
-    //passed successfully
+     */
+    @AfterAll
+    public static void stop() {
+        redis.stop();
+        postgresContainer.stop();
+    }
+    /////////////Redis Tests///////////////////
+
+    @Test
+    public void GetAndSetTest() {
+        var Trans = new Transaction(1L, 22.3);
+        redisService.put(Trans.getId().toString(), Trans);
+        org.junit.jupiter.api.Assertions.assertNotNull(redisService.get(Trans.getId().toString()));
+        org.junit.jupiter.api.Assertions.assertEquals(Trans.getId(), redisService.get(Trans.getId().toString()).getId());
+        org.junit.jupiter.api.Assertions.assertEquals(Trans.getAmount(), redisService.get(Trans.getId().toString()).getAmount());
+    }
+
+    //////////Postgres Tests///////////////////
     @Test
     public void GetAllUsers_Test() {
         var User1 = new User("lahcen", "John", "Do@gmail.com");
@@ -92,8 +115,8 @@ public class UserServiceIntegrationTest extends PostgresTest {
 
     @Test
     public void AuthenticateNonExistingUserTest_ShouldReturnNullUser() {
-         var result =restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail","1234password"), AuthenticationResponse.class);
-         Assertions.assertThat(result).isNull();
+        var result =restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail","1234password"), AuthenticationResponse.class);
+        Assertions.assertThat(result).isNull();
     }
 
     @Test
@@ -104,4 +127,7 @@ public class UserServiceIntegrationTest extends PostgresTest {
         assertThat(result.email()).isEqualTo(createUserDto.email());
 
     }
+
+
+
 }
