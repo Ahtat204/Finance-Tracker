@@ -81,5 +81,10 @@ public class Transaction {
         Description = description;
         Transactiontype = transactiontype;
     }
+
+    public Transaction(long Id, double amount) {
+     this.Id = Id;
+     this.amount = amount;
+    }
 }
 

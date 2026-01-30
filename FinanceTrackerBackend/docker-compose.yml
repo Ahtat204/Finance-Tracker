@@ -1,27 +1,47 @@
 services:
   db:
     image: postgres:13.1-alpine
+    container_name: db
     environment:
       POSTGRES_USER: ${DB_USERNAME}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${database}
+    networks:
+      - finance-tracker
     volumes:
       - postgres_data:/var/lib/postgresql/data
+  cache:
+    image: redis:7.4-alpine
+    restart: always
+    volumes:
+      - redis_cache:/var/lib/data
+    networks:
+      - finance-tracker
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    image: finance-tracker:1.3
+    image: finance-tracker:latest
+    container_name: app
     depends_on:
       - db
+      - cache
     environment:
       SPRING_DATASOURCE_URL: ${PROD_DB_URL}
-      jwt_secret: ${JWT_SECRET}
       SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
       SPRING_PROFILES_ACTIVE: ${SPRING_ENVIRONMENT}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
-      - "8080:8080"
+      - "${APP_PORT}:8080"
+    networks:
+      - finance-tracker
+
 volumes:
   postgres_data:
+  redis_cache:
+networks:
+  finance-tracker:
+      driver: bridge
+
+

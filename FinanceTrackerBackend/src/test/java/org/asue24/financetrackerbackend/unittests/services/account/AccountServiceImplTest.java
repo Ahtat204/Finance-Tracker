@@ -1,4 +1,4 @@
-package org.asue24.financetrackerbackend.unittests.services.account;
+package org.asue24.financetrackerbackend.services.account;
 
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.User;
@@ -68,4 +68,6 @@ class AccountServiceImplTest {
         assertNotNull(result);
         assertEquals(result, accounts);
     }
+
+
 }
