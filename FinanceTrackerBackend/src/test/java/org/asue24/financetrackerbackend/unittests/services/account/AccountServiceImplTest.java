@@ -1,4 +1,4 @@
-package org.asue24.financetrackerbackend.unittests.services.account;
+package org.asue24.financetrackerbackend.services.account;
 
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.User;
@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class AccountServiceImplTest {
 
-    User user = new  User(22L,"lahcen", "lahcenhhh", "ahtat", "hereweare");
+    User user = new User("heerewego", "lahcenhhh", "ahtat", "hereweare");
     Account account = new Account(1L, "lahcen", 22.2, user);
 
     @InjectMocks

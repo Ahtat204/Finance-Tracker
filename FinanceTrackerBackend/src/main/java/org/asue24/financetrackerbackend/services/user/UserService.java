@@ -1,5 +1,8 @@
 package org.asue24.financetrackerbackend.services.user;
 
+import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
+import org.asue24.financetrackerbackend.dto.CreateUserDto;
+import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.User;
 
 import java.util.List;
@@ -16,10 +19,10 @@ public interface UserService {
     /**
      * Retrieves an {@link User} by its unique identifier
      *
-     * @param id the unique identifier of the user
+     * @param userRequestDto request object
      * @return the {@link User} if found, or {@code RunTimeException} if no account exists with the given ID
      */
-    User getUser(Long id) throws RuntimeException;
+    User AuthenticateUser(UserRequestDto userRequestDto) throws RuntimeException;
 
     /**
      * Deletes an existing {@link User}.
@@ -43,7 +46,7 @@ public interface UserService {
      * @param user the user object to be created
      * @return returns the created user
      */
-    User createUser(User user);
+    User createUser(CreateUserDto user);
 
     /**
      * updates the details of an existing {@link User}
@@ -53,4 +56,7 @@ public interface UserService {
      * @return the new and updated User Object
      */
     User updateUser(Long id, User user);
+
+    User getUserByEmail(String email);
+    User getUserById(Long id);
 }
