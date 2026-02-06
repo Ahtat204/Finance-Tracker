@@ -60,7 +60,7 @@ public class RedisConfiguration {
         return template;
     }
     @Bean
-    public JedisBasedProxyManager jedisBasedProxyManager(JedisConnectionFactory jedisConnectionFactory) throws NoSuchFieldException, IllegalAccessException {
+    public JedisBasedProxyManager jedisBasedProxyManager(JedisConnectionFactory jedisConnectionFactory) {
       /*  var poolField = JedisConnectionFactory.class.getDeclaredField("pool");
         poolField.setAccessible(true);*/
         var poolConfig = new JedisPoolConfig();

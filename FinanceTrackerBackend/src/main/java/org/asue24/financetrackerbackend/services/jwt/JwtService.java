@@ -10,9 +10,9 @@ import java.util.function.Function;
 
 public interface JwtService {
 
-    String generateJwt(String email);
+    String generateJwt(String email,Long Id);
 
-    String createJwt(Map<String, Object> claims, String email);
+    String createJwt(Map<String, Object> claims, String email,Long Id);
 
     Key getSignKey();
 
@@ -27,4 +27,6 @@ public interface JwtService {
     Boolean isTokenExpired(String token);
 
     Boolean validateToken(String token, UserRequestDto authDto);
+
+    String extractId(String token);
 }
