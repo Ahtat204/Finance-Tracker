@@ -27,15 +27,18 @@ public class IdBasedRateLimitingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var clientId = request.getHeader("id");
-        if (clientId == null) return;
-        var bucket = jedisBasedProxyManager.builder().build(clientId,bucketConfigurationSupplier);
-        if(bucket.tryConsume(1)) {
-            filterChain.doFilter(request, response);
+        if (clientId != null) {
+            var bucket = jedisBasedProxyManager.builder().build(clientId,bucketConfigurationSupplier);
+            if(bucket.tryConsume(1)) {
+                filterChain.doFilter(request, response);
+            }
+            else {
+                response.setStatus(429);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\":\"Too many requests from this ID\"}");
+            }
         }
-        else {
-            response.setStatus(429);
-            response.setContentType("application/json");
-            response.getWriter().write("{\"error\":\"Too many requests from this ID\"}");
-        }
+        doFilter(request, response, filterChain);
+
     }
 }

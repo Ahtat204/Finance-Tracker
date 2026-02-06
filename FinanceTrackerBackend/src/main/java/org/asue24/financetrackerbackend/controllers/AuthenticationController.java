@@ -59,8 +59,9 @@ public class AuthenticationController {
             if (userDetails == null) {
                 throw new AuthenticationException("User not found");
             }
+            var token=jwtService.generateJwt(userDetails.getEmail(),userDetails.getId());
             // 3. Generate JWT and return 200 OK
-            return new ResponseEntity<>(new AuthenticationResponse(jwtService.generateJwt(userDetails.getEmail(),userDetails.getId()), userDetails.getEmail()), HttpStatus.OK);
+            return new ResponseEntity<>(new AuthenticationResponse(token, userDetails.getEmail()), HttpStatus.OK);
         } catch (AuthenticationException e) {
             log.atDebug().log(e.getLocalizedMessage() + e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401
