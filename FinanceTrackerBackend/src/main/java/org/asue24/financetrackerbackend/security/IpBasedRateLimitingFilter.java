@@ -20,14 +20,11 @@ import java.util.function.Supplier;
 public class IpBasedRateLimitingFilter extends OncePerRequestFilter {
     private final JedisBasedProxyManager jedisBasedProxyManager;
     private final Supplier<BucketConfiguration> bucketConfigurationSupplier;
-
     @Autowired
     public IpBasedRateLimitingFilter(JedisBasedProxyManager jedisBasedProxyManager, Supplier<BucketConfiguration> bucketConfigurationSupplier) {
         this.jedisBasedProxyManager = jedisBasedProxyManager;
-
         this.bucketConfigurationSupplier = bucketConfigurationSupplier;
     }
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var clientIpAddress = request.getRemoteAddr();

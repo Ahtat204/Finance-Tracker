@@ -80,8 +80,9 @@ public class JwtFilter extends OncePerRequestFilter {
                 var Authtoken = new UsernamePasswordAuthenticationToken(userinfo, null, userinfo.getAuthorities());
                 Authtoken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(Authtoken);
-                request.setAttribute("id", jwtService.extractemail(token)); // passes the userId to be used in the next Filter, which the IdBasedRateLimitingFilter
+
             }
+            request.setAttribute("id", jwtService.extractemail(token)); // passes the userId to be used in the next Filter, which the IdBasedRateLimitingFilter
         }
 
         filterChain.doFilter(request, response);
