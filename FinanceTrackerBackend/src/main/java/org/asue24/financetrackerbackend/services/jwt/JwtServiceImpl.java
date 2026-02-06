@@ -31,9 +31,9 @@ public class JwtServiceImpl implements JwtService {
      * @param email The user's email address to be set as the token subject. * @return A signed JWT string.
      */
     @Override
-    public String generateJwt(String email) {
+    public String generateJwt(String email,Long Id) {
         var claims = new HashMap<String, Object>();
-        return createJwt(claims, email);
+        return createJwt(claims, email,Id);
     }
     /**
      * Creates a JWT with specific claims and a subject. * Currently sets an expiration time of 30 minutes from the time of issuance.
@@ -41,10 +41,10 @@ public class JwtServiceImpl implements JwtService {
      * @param claims Map of custom claims to include in the payload. * @param email The subject (email) of the token. * @return A compacted, signed JWT.
      */
     @Override
-    public String createJwt(Map<String, Object> claims, String email) {
+    public String createJwt(Map<String, Object> claims, String email,Long Id) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(email)
+                .setSubject(email).claim("id",Id.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -87,7 +87,7 @@ public class JwtServiceImpl implements JwtService {
      */
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
+        final var claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
@@ -121,5 +121,9 @@ public class JwtServiceImpl implements JwtService {
     public Boolean validateToken(String token, UserRequestDto authDto) {
         var email = extractemail(token);
         return (email.equals(authDto.getEmail()) && !isTokenExpired(token));
+    }
+    public String extractId(String token){
+      var claims = extractAllClaims(token);
+      return claims.get("id").toString();
     }
 }

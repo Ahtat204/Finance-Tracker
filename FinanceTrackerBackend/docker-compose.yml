@@ -12,6 +12,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   cache:
     image: redis:7.4-alpine
+    container_name: redis_cache
     restart: always
     volumes:
       - redis_cache:/var/lib/data

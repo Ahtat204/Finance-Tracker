@@ -8,6 +8,7 @@ import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,7 +24,7 @@ import java.io.IOException;
  * validates it, and sets the * authentication in
  * the SecurityContext if the token is valid.
  */
-
+@Order(2)
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userService;
@@ -45,7 +46,7 @@ public class JwtFilter extends OncePerRequestFilter {
      * @throws IOException
      */
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+    protected boolean shouldNotFilter(HttpServletRequest request)  {
         var path = request.getRequestURI();
         return path.startsWith("/api/auth");
     }
@@ -79,8 +80,15 @@ public class JwtFilter extends OncePerRequestFilter {
                 var Authtoken = new UsernamePasswordAuthenticationToken(userinfo, null, userinfo.getAuthorities());
                 Authtoken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(Authtoken);
+
             }
+            var id=request.getAttribute("id");
+            if (id == null) {
+                request.setAttribute("id", jwtService.extractemail(token));
+            }
+             // passes the userId to be used in the next Filter, which the IdBasedRateLimitingFilter
         }
+
         filterChain.doFilter(request, response);
     }
 }

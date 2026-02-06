@@ -43,11 +43,13 @@ public class AuthenticationController {
         this.jwtService = jwtService;
     }
 
-    /** Authenticates a user based on email and password.
-     *  <p>The process follows these steps:</p> <ol> <li>Attempts to authenticate the user using the AuthenticationManager.
-     *  </li>  <li>Retrieves user details from the database.</li>  <li>Generates a JWT token if authentication is successful.
-     *  </li>  </ol>  @param userRequestDto DTO containing the user's email and raw password. * @return A {@link ResponseEntity} containing the
-     *  {@link AuthenticationResponse} (JWT and email) * or an UNAUTHORIZED status if authentication fails. */
+    /**
+     * Authenticates a user based on email and password.
+     * <p>The process follows these steps:</p> <ol> <li>Attempts to authenticate the user using the AuthenticationManager.
+     * </li>  <li>Retrieves user details from the database.</li>  <li>Generates a JWT token if authentication is successful.
+     * </li>  </ol>  @param userRequestDto DTO containing the user's email and raw password. * @return A {@link ResponseEntity} containing the
+     * {@link AuthenticationResponse} (JWT and email) * or an UNAUTHORIZED status if authentication fails.
+     */
     @PostMapping("login")
     public ResponseEntity<AuthenticationResponse> Login(@Valid @RequestBody UserRequestDto userRequestDto) {
         try {
@@ -57,19 +59,22 @@ public class AuthenticationController {
             if (userDetails == null) {
                 throw new AuthenticationException("User not found");
             }
+            var token=jwtService.generateJwt(userDetails.getEmail(),userDetails.getId());
             // 3. Generate JWT and return 200 OK
-            return new ResponseEntity<>(new AuthenticationResponse(jwtService.generateJwt(userDetails.getEmail()), userDetails.getEmail()), HttpStatus.OK);
+            return new ResponseEntity<>(new AuthenticationResponse(token, userDetails.getEmail()), HttpStatus.OK);
         } catch (AuthenticationException e) {
             log.atDebug().log(e.getLocalizedMessage() + e.getMessage());
-
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // 401
         }
     }
 
-    /**  Registers a new user in the system.
-     *   @param userRequestDto DTO containing registration details for the new user.
-     *   @return A {@link ResponseEntity} with a success message if created,
-     *   a BAD_REQUEST status if input is null, or a BAD_GATEWAY status if creation fails. */
+    /**
+     * Registers a new user in the system.
+     *
+     * @param userRequestDto DTO containing registration details for the new user.
+     * @return A {@link ResponseEntity} with a success message if created,
+     * a BAD_REQUEST status if input is null, or a BAD_GATEWAY status if creation fails.
+     */
     @PostMapping("signup")
     public ResponseEntity<String> Signup(@Valid @RequestBody CreateUserDto userRequestDto) {
         if (userRequestDto == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
