@@ -1,5 +1,6 @@
 package org.asue24.financetrackerbackend.services.transaction;
 import org.asue24.enums.TransactionType;
+import org.asue24.financetrackerbackend.dto.TransactionBody;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -23,7 +24,7 @@ public interface TransactionService {
      * @param transaction the transaction entity to create
      * @return the persisted {@link Transaction} with an assigned identifier
      */
-    Transaction createTransaction(Transaction transaction);
+    Transaction createTransaction(Transaction transaction,Integer senderId, Optional<Integer> receiverId);
 
     /**
      * Deletes an existing {@link Transaction}.

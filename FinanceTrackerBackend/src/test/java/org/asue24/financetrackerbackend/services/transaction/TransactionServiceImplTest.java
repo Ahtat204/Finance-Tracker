@@ -1,10 +1,13 @@
 package org.asue24.financetrackerbackend.services.transaction;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.asue24.enums.TransactionType;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.account.AccountService;
+import org.asue24.financetrackerbackend.services.account.AccountServiceImpl;
 import org.asue24.financetrackerbackend.services.caching.RedisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +34,16 @@ class TransactionServiceImplTest {
     private TransactionRepository transactionRepository;
     @Mock
     private RedisService redisService;
+    @Mock
+    private AccountServiceImpl accountService;
 
     /// ///////////////////////////// happy path
     @Test
     void createTransaction() {
         when(transactionRepository.save(any(Transaction.class))).thenReturn(trans);
-        var result = transactionService.createTransaction(trans);
+        when(accountService.getAccountByAccountId(1L)).thenReturn(account);
+        Integer senderId = 1;
+        var result = transactionService.createTransaction(trans,senderId,null);
         assertNotNull(result);
         assertEquals(trans, result);
     }
