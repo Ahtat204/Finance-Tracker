@@ -16,7 +16,7 @@ public class TestDependencies {
     protected static final PostgreSQLContainer<?> postgresContainer =
             new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
                     .withExposedPorts(5432).withAccessToHost(true)
-                    .withUsername("test")
+                    .withUsername("postgres")
                     .withPassword("test")
                     .withClasspathResourceMapping("init.sql",
                             "/docker-entrypoint-initdb.d/init.sql",
