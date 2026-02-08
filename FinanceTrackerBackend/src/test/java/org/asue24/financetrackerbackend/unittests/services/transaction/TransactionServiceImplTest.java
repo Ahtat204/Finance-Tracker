@@ -1,4 +1,4 @@
-package org.asue24.financetrackerbackend.services.transaction;
+package org.asue24.financetrackerbackend.unittests.services.transaction;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.asue24.enums.TransactionType;

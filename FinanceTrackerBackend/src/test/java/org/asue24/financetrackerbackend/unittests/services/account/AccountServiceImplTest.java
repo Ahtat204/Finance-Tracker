@@ -1,4 +1,4 @@
-package org.asue24.financetrackerbackend.services.account;
+package org.asue24.financetrackerbackend.unittests.services.account;
 
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.User;
