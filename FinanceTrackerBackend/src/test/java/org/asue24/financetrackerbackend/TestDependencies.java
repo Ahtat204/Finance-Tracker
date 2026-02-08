@@ -26,7 +26,7 @@ public class TestDependencies {
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
-            registry.add("spring.datasource.url", TestDependencies::getFormattedConnectionString);
+        registry.add("spring.datasource.url", TestDependencies::getFormattedConnectionString);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
         registry.add("spring.data.redis.host", redis::getHost);

@@ -1,6 +1,4 @@
-# ahtat204/finance-tracker: Personal Finance Tracker 💸 ![Status](https://img.shields.io/badge/status-ongoing-green?style=for-the-badge)
-
-
+# ahtat204/finance-tracker: Personal Finance Tracker 💸
 
 The **Finance Tracker** is a full-stack application designed to help users manage their personal finances, track transactions, and monitor accounts. It is built using a **microservices architecture** with a distinct **Spring Boot backend** and a **JavaFX frontend**, all managed by **Maven**.
 

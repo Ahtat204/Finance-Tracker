@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,6 +64,7 @@ public class Transaction {
      */
     @ManyToOne(fetch = FetchType.LAZY,targetEntity = Account.class)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnore
     private Account Account;
 
     /**
@@ -78,6 +80,11 @@ public class Transaction {
         transactionDate = date;
         Description = description;
         Transactiontype = transactiontype;
+    }
+
+    public Transaction(long Id, double amount) {
+     this.Id = Id;
+     this.amount = amount;
     }
     public Transaction(Double amount, LocalDate date, String description, TransactionType transactiontype,Account account) {
         this.amount = amount;

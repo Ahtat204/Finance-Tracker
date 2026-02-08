@@ -8,6 +8,7 @@ import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class TransactionServiceImpl implements TransactionService {
     /**
      * Repository for performing CRUD operations on {@link Transaction} entities.
      */
+
     private final TransactionRepository transactionRepository;
     private final CachingService<Transaction> redisService;
     private final AccountService accountService;
@@ -126,7 +128,6 @@ public class TransactionServiceImpl implements TransactionService {
                     return transactionRepository.save(transaction);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for update."));
-        redisService.put(id.toString(), result);
         return result;
     }
 
