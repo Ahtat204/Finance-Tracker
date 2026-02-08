@@ -61,7 +61,7 @@ public class Transaction {
     /**
      * The account associated with this transaction.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Account.class)
     @JoinColumn(name = "account_id", nullable = false)
     private Account Account;
 
@@ -74,10 +74,17 @@ public class Transaction {
      * @param transactiontype the type of transaction
      */
     public Transaction(Double amount, LocalDate date, String description, TransactionType transactiontype) {
-        amount = amount;
+       this.amount = amount;
         transactionDate = date;
         Description = description;
         Transactiontype = transactiontype;
+    }
+    public Transaction(Double amount, LocalDate date, String description, TransactionType transactiontype,Account account) {
+        this.amount = amount;
+        transactionDate = date;
+        Description = description;
+        Transactiontype = transactiontype;
+        Account = account;
     }
 }
 

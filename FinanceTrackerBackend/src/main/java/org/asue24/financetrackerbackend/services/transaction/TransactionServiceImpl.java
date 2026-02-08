@@ -26,13 +26,8 @@ public class TransactionServiceImpl implements TransactionService {
     /**
      * Repository for performing CRUD operations on {@link Transaction} entities.
      */
-
     private final TransactionRepository transactionRepository;
-    /**
-     *
-     */
     private final CachingService<Transaction> redisService;
-
     private final AccountService accountService;
 
     /**
@@ -46,7 +41,6 @@ public class TransactionServiceImpl implements TransactionService {
         this.redisService = redisService;
         this.accountService = accountService;
     }
-
     /**
      *
      * @param transaction the transaction entity to create
@@ -54,7 +48,6 @@ public class TransactionServiceImpl implements TransactionService {
      * @param receiverId it's optional because not always we transfer ;
      * @return
      */
-    // @CachePut(value = "transactions", key = "#result.id")
     @Transactional
     @Override
     public Transaction createTransaction(Transaction transaction, Integer senderId, Optional<Integer> receiverId) {
