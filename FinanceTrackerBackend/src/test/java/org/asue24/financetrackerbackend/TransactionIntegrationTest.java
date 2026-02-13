@@ -15,7 +15,6 @@ import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.transaction.TransactionService;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -58,10 +57,10 @@ public class TransactionIntegrationTest extends TestDependencies {
     }
 
 
-
     @Test
     public void testTransactionCreation() {
-        var user2 = userRepository.findUserById(2L).get();
+        var user1=userRepository.save(new User("lahcen","ahtat204","lahcen@asue24.org","lahce33"));
+        var user2 = userRepository.findUserById(user1.getId()).get();
         var account1 = accountRepository.getReferenceById(user2.getId());
         var transaction = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, account1);
         var trans = transactionRepository.save(transaction);

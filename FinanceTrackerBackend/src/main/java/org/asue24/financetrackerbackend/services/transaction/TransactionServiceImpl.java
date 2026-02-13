@@ -86,6 +86,7 @@ public class TransactionServiceImpl implements TransactionService {
                 SenderAccount.setBalance(SenderAccount.getbalance() - transaction.getAmount());
                 ReceiverAccount.setBalance(SenderAccount.getbalance() + transaction.getAmount());
                 accountService.updateAccount(Long.valueOf(senderId), SenderAccount);
+                accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
                var account= accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
                 logger.info("{account balance is:}"+account.getbalance());
             }

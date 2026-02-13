@@ -83,6 +83,7 @@ public class GlobalConfigs {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES, true);
         mapper.configure(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_OPTIONALS,true);
+        mapper.configure(MapperFeature.AUTO_DETECT_FIELDS,true);
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         return mapper;
