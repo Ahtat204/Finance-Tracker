@@ -24,7 +24,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Docker environment
         run: |
-         sudo ln -s $HOME/.rd/docker.sock /var/run/docker.sock
          mvn -rf ~/.m2/repository
          
       - name: Setup JDK 17
