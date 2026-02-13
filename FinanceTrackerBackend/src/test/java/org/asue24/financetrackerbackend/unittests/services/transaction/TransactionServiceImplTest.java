@@ -1,15 +1,13 @@
 package org.asue24.financetrackerbackend.unittests.services.transaction;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
+
 import org.asue24.enums.TransactionType;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
-import org.asue24.financetrackerbackend.services.account.AccountService;
 import org.asue24.financetrackerbackend.services.account.AccountServiceImpl;
 import org.asue24.financetrackerbackend.services.caching.RedisService;
-import org.asue24.financetrackerbackend.services.transaction.TransactionServiceImpl;
 import org.asue24.financetrackerbackend.services.transaction.TransactionServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +19,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceImplTest {
