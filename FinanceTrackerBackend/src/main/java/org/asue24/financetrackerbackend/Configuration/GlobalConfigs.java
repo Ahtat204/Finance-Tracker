@@ -39,6 +39,8 @@ public class GlobalConfigs {
     @Value("${spring.data.redis.port}")
     int port;
 
+    Long RequestLimit=40L;
+
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig().
@@ -75,7 +77,7 @@ public class GlobalConfigs {
     }
     @Bean
     public Supplier<BucketConfiguration> bucketConfiguration() {
-        return ()->BucketConfiguration.builder().addLimit(Bandwidth.simple(16L,Duration.ofMinutes(3L))).build();
+        return ()->BucketConfiguration.builder().addLimit(Bandwidth.simple(RequestLimit,Duration.ofMinutes(3L))).build();
     }
 
     @Bean
