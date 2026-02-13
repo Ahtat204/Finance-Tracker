@@ -68,7 +68,7 @@ public class TransactionController {
     @PostMapping
     public ResponseEntity<Transaction> createTransaction(@NotNull @RequestBody TransactionBody transaction) {
         var result = transactionService.createTransaction(transaction.transaction(), transaction.senderId(), Optional.of(transaction.receiverId()));
-        if (result != null) return ResponseEntity.badRequest().body(result);
+        if (result == null) return ResponseEntity.badRequest().body(result);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

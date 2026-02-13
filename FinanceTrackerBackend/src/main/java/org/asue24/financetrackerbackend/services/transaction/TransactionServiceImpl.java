@@ -1,13 +1,16 @@
 package org.asue24.financetrackerbackend.services.transaction;
 
 import jakarta.transaction.Transactional;
+import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
 import org.asue24.financetrackerbackend.services.account.AccountService;
 import org.asue24.financetrackerbackend.services.caching.CachingService;
+import org.hibernate.cfg.Environment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final CachingService<Transaction> redisService;
     private final AccountService accountService;
+    Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     /**
      * Constructs a new {@code TransactionServiceImpl} with the specified repository.
@@ -43,50 +47,53 @@ public class TransactionServiceImpl implements TransactionService {
         this.redisService = redisService;
         this.accountService = accountService;
     }
+
     /**
-     *
      * @param transaction the transaction entity to create
      * @param senderId
-     * @param receiverId it's optional because not always we transfer ;
+     * @param receiverId  it's optional because not always we transfer ;
      * @return
      */
-    @Transactional
+
     @Override
     public Transaction createTransaction(Transaction transaction, Integer senderId, Optional<Integer> receiverId) {
         if (transaction == null) {
             throw new IllegalArgumentException("Transaction cannot be null");
         }
+
         var type = transaction.getTransactiontype();
+        transaction.setAccount(new Account(Long.valueOf(senderId)));
         switch (type) {
             case EXPENSE -> {
-             var account= accountService.getAccountByAccountId(Long.valueOf(senderId));
-             if(account.getBalance() < transaction.getAmount()) {
-                 throw new IllegalArgumentException("not enough Balance");
-             }
-             account.setBalance(account.getBalance() - transaction.getAmount());
-             accountService.updateAccount(Long.valueOf(senderId), account);
+                var account = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                if (account.getbalance() < transaction.getAmount()) {
+                    throw new IllegalArgumentException("not enough Balance");
+                }
+                account.setBalance(account.getbalance() - transaction.getAmount());
+                accountService.updateAccount(Long.valueOf(senderId), account);
             }
             case INCOME -> {
-                var account= accountService.getAccountByAccountId(Long.valueOf(senderId));
-                account.setBalance(account.getBalance() + transaction.getAmount());
+                var account = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                account.setBalance(account.getbalance() + transaction.getAmount());
                 accountService.updateAccount(Long.valueOf(senderId), account);
             }
             case TRANSFER -> {
-                var SenderAccount= accountService.getAccountByAccountId(Long.valueOf(senderId));
-                var ReceiverAccount= accountService.getAccountByAccountId(Long.valueOf(receiverId.get()));
-                if(SenderAccount.getBalance() < transaction.getAmount()) {
+                var SenderAccount = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                var ReceiverAccount = accountService.getAccountByAccountId(Long.valueOf(receiverId.get()));
+                if (SenderAccount.getbalance() < transaction.getAmount()) {
                     throw new IllegalArgumentException("not enough Balance");
                 }
-                SenderAccount.setBalance(SenderAccount.getBalance() - transaction.getAmount());
-                ReceiverAccount.setBalance(SenderAccount.getBalance() + transaction.getAmount());
+                SenderAccount.setBalance(SenderAccount.getbalance() - transaction.getAmount());
+                ReceiverAccount.setBalance(SenderAccount.getbalance() + transaction.getAmount());
                 accountService.updateAccount(Long.valueOf(senderId), SenderAccount);
-                accountService.updateAccount(Long.valueOf(receiverId.get()),ReceiverAccount);
+               var account= accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
+                logger.info("{account balance is:}"+account.getbalance());
             }
         }
         var Trans = transactionRepository.save(transaction);
         var AccountId = Trans.getAccount().getId();
         accountService.UpdateAccount(AccountId, transaction.getAmount());
-        redisService.put(Trans.getId().toString(), Trans);
+        // redisService.put(Trans.getId().toString(), Trans);
         return Trans;
     }
 

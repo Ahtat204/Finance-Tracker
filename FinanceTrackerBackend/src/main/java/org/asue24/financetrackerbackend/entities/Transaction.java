@@ -2,6 +2,7 @@ package org.asue24.financetrackerbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -50,22 +51,24 @@ public class Transaction {
      * An optional description providing context about the transaction.
      */
     @Column(name = "description", nullable = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private String Description;
 
     /**
      * The type of transaction (e.g., INCOME, EXPENSE, TRANSFER).
      */
     @Enumerated(EnumType.STRING)
+    @JsonFormat(pattern = "")
     @Column(name = "Transaction_type", nullable = true)
     private TransactionType Transactiontype;
 
     /**
      * The account associated with this transaction.
      */
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Account.class)
+    @ManyToOne(fetch = FetchType.EAGER,targetEntity = Account.class)
     @JoinColumn(name = "account_id", nullable = false)
-    @JsonIgnore
-    private Account Account;
+  //  @JsonIgnore
+    private Account account;
 
     /**
      * Constructs a new Transaction with the given details.
@@ -91,7 +94,8 @@ public class Transaction {
         transactionDate = date;
         Description = description;
         Transactiontype = transactiontype;
-        Account = account;
+        this.account = account;
     }
+
 }
 

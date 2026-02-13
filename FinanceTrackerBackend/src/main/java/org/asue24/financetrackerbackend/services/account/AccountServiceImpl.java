@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     public Account addAccount(Account account) {
         var Acc = accountRepository.save(account);
         if(Acc == null) throw new RuntimeException("Account not added");
-        return Acc;
+        return account;
     }
 
     /**
@@ -85,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public double UpdateAccount(Long id, double amount) {
         accountRepository.findById(id).ifPresent(existing->{
-            existing.setBalance(existing.getBalance() + amount);
+            existing.setBalance(existing.getbalance() + amount);
         });
         return amount;
     }

@@ -1,6 +1,9 @@
 package org.asue24.financetrackerbackend.Configuration;
 
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
@@ -11,6 +14,7 @@ import org.asue24.financetrackerbackend.entities.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,7 +22,6 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import redis.clients.jedis.JedisFactory;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
@@ -29,7 +32,7 @@ import java.util.function.Supplier;
 import static java.time.Duration.ofSeconds;
 
 @Configuration
-public class RedisConfiguration {
+public class GlobalConfigs {
     @Value("${spring.data.redis.host}")
     String host;
     @Value("${spring.data.redis.port}")
@@ -74,5 +77,12 @@ public class RedisConfiguration {
         return ()->BucketConfiguration.builder().addLimit(Bandwidth.simple(10L,Duration.ofMinutes(2L))).build();
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES, true);
+        mapper.registerModule(new JavaTimeModule());
+        return mapper;
+    }
 
 }
