@@ -15,6 +15,7 @@ import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.transaction.TransactionService;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -56,13 +57,18 @@ public class TransactionIntegrationTest extends TestDependencies {
         redis.stop();
     }
 
+    @AfterEach
+    public void cleanUp() {
+
+    }
 
     @Test
     public void testTransactionCreation() {
         var user1=userRepository.save(new User("lahcen","ahtat204","lahcen@asue24.org","lahce33"));
         var user2 = userRepository.findUserById(user1.getId()).get();
-        var account1 = accountRepository.getReferenceById(user2.getId());
-        var transaction = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, account1);
+        var saveAccount=accountRepository.save(new Account("lahcen",22.2,new User(user1.getId())));
+        var account = accountRepository.getReferenceById(user2.getId());
+        var transaction = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, account);
         var trans = transactionRepository.save(transaction);
         Assertions.assertNotNull(trans);
     }
@@ -131,13 +137,13 @@ public class TransactionIntegrationTest extends TestDependencies {
         Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
 
          */
-        var createUserDto1 = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
+        var createUserDto1 = new CreateUserDto("lahcen", "lhdh", "lahcen23ahtat@gmail", "1234password");
         var createUserDto2 = new CreateUserDto("lahcen", "lhdh", "lahcen38ahtat@gmail", "1234password");
 
         var user1 = restTemplate.postForObject("/api/auth/signup", createUserDto1, String.class);
         var user2 = restTemplate.postForObject("/api/auth/signup", createUserDto2, String.class);
 
-        var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
+        var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen23ahtat@gmail", "1234password"), AuthenticationResponse.class);
         var result2 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen38ahtat@gmail", "1234password"), AuthenticationResponse.class);
 
         Assertions.assertNotNull(result1);
@@ -180,7 +186,7 @@ public class TransactionIntegrationTest extends TestDependencies {
         var balance1 = body1.getbalance();
         var balance2 = body2.getbalance();
 
-        var trans = new Transaction(20.0, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, new Account(body1.getId()));
+        var trans = new Transaction(20.0, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, new Account());
 
         Integer accountId1 = Integer.valueOf(Math.toIntExact(body1.getId()));
         Integer accountId2 = Integer.valueOf(Math.toIntExact(body2.getId()));
@@ -192,7 +198,7 @@ public class TransactionIntegrationTest extends TestDependencies {
         Assertions.assertNotNull(transactionResponse.getBody());
         var accountbalance1 = accountRepository.getAccountById(body1.getId()).get().getbalance();
         var accountbalance2 = accountRepository.getAccountById(body2.getId()).get().getbalance();
-        Assertions.assertEquals(balance1, accountbalance1 + trans.getAmount());
-        Assertions.assertEquals(balance2, accountbalance2 - trans.getAmount());
+        Assertions.assertEquals(balance1 - trans.getAmount(), accountbalance1);
+        Assertions.assertEquals(accountbalance2, balance2 + trans.getAmount());
     }
 }

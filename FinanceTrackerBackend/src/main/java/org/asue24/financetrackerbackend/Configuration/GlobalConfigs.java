@@ -75,7 +75,7 @@ public class GlobalConfigs {
     }
     @Bean
     public Supplier<BucketConfiguration> bucketConfiguration() {
-        return ()->BucketConfiguration.builder().addLimit(Bandwidth.simple(10L,Duration.ofMinutes(2L))).build();
+        return ()->BucketConfiguration.builder().addLimit(Bandwidth.simple(15L,Duration.ofMinutes(3L))).build();
     }
 
     @Bean

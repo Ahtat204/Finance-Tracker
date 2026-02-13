@@ -1,12 +1,10 @@
 package org.asue24.financetrackerbackend.services.transaction;
 
-import jakarta.transaction.Transactional;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
 import org.asue24.financetrackerbackend.services.account.AccountService;
 import org.asue24.financetrackerbackend.services.caching.CachingService;
-import org.hibernate.cfg.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,16 +82,15 @@ public class TransactionServiceImpl implements TransactionService {
                     throw new IllegalArgumentException("not enough Balance");
                 }
                 SenderAccount.setBalance(SenderAccount.getbalance() - transaction.getAmount());
-                ReceiverAccount.setBalance(SenderAccount.getbalance() + transaction.getAmount());
+                ReceiverAccount.setBalance(ReceiverAccount.getbalance() + transaction.getAmount());
                 accountService.updateAccount(Long.valueOf(senderId), SenderAccount);
-                accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
-               var account= accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
-                logger.info("{account balance is:}"+account.getbalance());
+                var account = accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
+
+                logger.info("{account balance is:}" + account);
             }
         }
         var Trans = transactionRepository.save(transaction);
         var AccountId = Trans.getAccount().getId();
-        accountService.UpdateAccount(AccountId, transaction.getAmount());
         // redisService.put(Trans.getId().toString(), Trans);
         return Trans;
     }

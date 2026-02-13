@@ -48,7 +48,7 @@ Content-Type: application/json
 ###
 POST localhost:8080/api/transactions
 Content-Type:  application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzA5OTg1NzEsImV4cCI6MTc3MTAwMDM3MX0.3EEilvMAYmAMLyHFZZjouTSb29TU14sXl6Y8KKmA6Zo
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzEwMTU4ODIsImV4cCI6MTc3MTAxNzY4Mn0.LLa0DMtLAY4gU8W1dh_qGHGqfR4cAj9hqnsnt1KK6yU
 
 {
   "transaction": {
