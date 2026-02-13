@@ -106,11 +106,11 @@ public class TransactionServiceImpl implements TransactionService {
      * {@code false} if it does not exist
      */
     // @CacheEvict(value = "transactions", key = "#id")
+
     @Override
     public Boolean deleteTransaction(Long id) {
         if (transactionRepository.existsById(id)) {
             transactionRepository.deleteById(id);
-            redisService.Evict(id.toString());
             return true;
         }
         return false;
@@ -128,6 +128,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @throws IllegalArgumentException if the transaction does not exist
      */
     // @CachePut(value = "transactions", key = "#id")
+
     @Override
     public Transaction updateTransaction(Long id, Transaction transaction) {
         var result = transactionRepository.findById(id)
@@ -153,6 +154,10 @@ public class TransactionServiceImpl implements TransactionService {
         var transaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
         redisService.put(transactionId.toString(), transaction);
+
+    @Override
+    public Transaction getTransaction(Long transactionId) throws RuntimeException {
+        var transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
         return transaction;
     }
 
