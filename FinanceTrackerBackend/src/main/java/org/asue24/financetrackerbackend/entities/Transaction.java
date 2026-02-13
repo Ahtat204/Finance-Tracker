@@ -58,7 +58,7 @@ public class Transaction {
      * The type of transaction (e.g., INCOME, EXPENSE, TRANSFER).
      */
     @Enumerated(EnumType.STRING)
-    @JsonFormat(pattern = "")
+    @JsonFormat(pattern = "", shape = JsonFormat.Shape.NUMBER)
     @Column(name = "Transaction_type", nullable = true)
     private TransactionType Transactiontype;
 
@@ -67,6 +67,7 @@ public class Transaction {
      */
     @ManyToOne(fetch = FetchType.EAGER,targetEntity = Account.class)
     @JoinColumn(name = "account_id", nullable = false)
+    @JsonIgnore
   //  @JsonIgnore
     private Account account;
 

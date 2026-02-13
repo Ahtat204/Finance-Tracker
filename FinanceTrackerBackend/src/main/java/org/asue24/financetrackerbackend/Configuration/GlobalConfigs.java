@@ -3,6 +3,7 @@ package org.asue24.financetrackerbackend.Configuration;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.BucketConfiguration;
@@ -81,6 +82,8 @@ public class GlobalConfigs {
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_TIMES, true);
+        mapper.configure(MapperFeature.REQUIRE_HANDLERS_FOR_JAVA8_OPTIONALS,true);
+        mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }

@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     public Account addAccount(Account account) {
         var Acc = accountRepository.save(account);
         if(Acc == null) throw new RuntimeException("Account not added");
-        return account;
+        return Acc;
     }
 
     /**

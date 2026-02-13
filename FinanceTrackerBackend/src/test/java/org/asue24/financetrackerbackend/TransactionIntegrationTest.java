@@ -1,9 +1,9 @@
 package org.asue24.financetrackerbackend;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.asue24.enums.TransactionType;
 import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
 import org.asue24.financetrackerbackend.dto.CreateUserDto;
+import org.asue24.financetrackerbackend.dto.TransactionBody;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
@@ -15,17 +15,19 @@ import org.asue24.financetrackerbackend.services.caching.CachingService;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.transaction.TransactionService;
 import org.junit.jupiter.api.AfterAll;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 //since Transaction cannot be created without an account , which cannot be created without a user , we will rely on the fact that the database already contains account(s) and user(s)
 
@@ -46,7 +48,7 @@ public class TransactionIntegrationTest extends TestDependencies {
     private AccountRepository accountRepository;
     @Autowired
     private CachingService cachingService;
-    private Logger logger=  LoggerFactory.getLogger(TransactionIntegrationTest.class);
+    private Logger logger = LoggerFactory.getLogger(TransactionIntegrationTest.class);
 
 
     @AfterAll
@@ -67,7 +69,7 @@ public class TransactionIntegrationTest extends TestDependencies {
     }
 
     @Test
-    public void CreateTransactionTest() {
+    public void CreateExpenseTransactionTest() {
           /*
         var user1 = userRepository.findUserById(1L);
         var user2 = userRepository.findUserById(2L);
@@ -86,15 +88,112 @@ public class TransactionIntegrationTest extends TestDependencies {
         var createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
         var user = restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
         var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
-        var token=result1.jwtToken();
-        var claims=jwtService.extractAllClaims(token);
-        var Id=claims.get("id").toString();
-        var account=new Account("lahcen",222.22,new User(Long.parseLong(Id)));
-        var result2=restTemplate.postForObject("/api/accounts", account, Account.class);
-        var trans=new Transaction(20.0, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, new Account(account.getId()));
-        var transaction=restTemplate.postForObject("/api/transactions", trans, Transaction.class);
+        Assertions.assertNotNull(result1);
+        var token = result1.jwtToken();
+        var claims = jwtService.extractAllClaims(token);
+        var Id = claims.get("id").toString();
+        var accountRequest = new Account("lahcen", 222.22, new User(Long.parseLong(Id)));
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+        HttpEntity<Account> accountEntity = new HttpEntity<>(accountRequest, headers);
+        ResponseEntity<Account> response = restTemplate.postForEntity("/api/accounts", accountEntity, Account.class);
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        var body = response.getBody();
+        var balance = body.getbalance();
+        var trans = new Transaction(20.0, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, new Account(body.getId()));
+        Integer accountId = Integer.valueOf(Math.toIntExact(body.getId()));
+        var transbody = new TransactionBody(trans, Integer.valueOf(accountId), Optional.empty());
+        HttpEntity<TransactionBody> transactionEntity = new HttpEntity<>(transbody, headers);
+        ResponseEntity<Transaction> transactionResponse = restTemplate.postForEntity("/api/transactions", transactionEntity, Transaction.class);
+        Assertions.assertNotNull(transactionResponse);
+        Assertions.assertEquals(HttpStatus.CREATED, transactionResponse.getStatusCode());
+        Assertions.assertNotNull(transactionResponse.getBody());
+        var accountBalance = accountRepository.getAccountById(body.getId()).get().getbalance();
+        Assertions.assertEquals(balance, accountBalance + trans.getAmount());
+    }
+
+    @Test
+    public void CreateTransferTransactionTest() {
+          /*
+        var user1 = userRepository.findUserById(1L);
+        var user2 = userRepository.findUserById(2L);
+        if (!user1.isPresent() && !user2.isPresent()) return;
+        var value1 = user1.get();
+        var value2 = user2.get();
+        var account1 = accountRepository.getById(value1.getId());
+        var account2 = accountRepository.getById(value2.getId());
+        var trans = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, account1);
+        var result = transactionService.createTransaction(trans, 2, Optional.of(3));
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(account1.getbalance(), account1.getbalance() + trans.getAmount());
+        Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
+
+         */
+        var createUserDto1 = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
+        var createUserDto2 = new CreateUserDto("lahcen", "lhdh", "lahcen38ahtat@gmail", "1234password");
+
+        var user1 = restTemplate.postForObject("/api/auth/signup", createUserDto1, String.class);
+        var user2 = restTemplate.postForObject("/api/auth/signup", createUserDto2, String.class);
+
+        var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
+        var result2 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen38ahtat@gmail", "1234password"), AuthenticationResponse.class);
+
         Assertions.assertNotNull(result1);
         Assertions.assertNotNull(result2);
-        Assertions.assertNotNull(transaction);
+
+        var token1 = result1.jwtToken();
+        var token2 = result2.jwtToken();
+
+        var claims1 = jwtService.extractAllClaims(token1);
+        var claims2 = jwtService.extractAllClaims(token2);
+        Assertions.assertNotNull(claims1);
+        var Id1 = claims1.get("id").toString();
+        var Id2 = claims2.get("id").toString();
+
+        var accountRequest1 = new Account("lahcen", 222.22, new User(Long.parseLong(Id1)));
+        var accountRequest2 = new Account("lahcen", 222.22, new User(Long.parseLong(Id2)));
+
+        var headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token1);
+
+        HttpEntity<Account> accountEntity1 = new HttpEntity<>(accountRequest1, headers);
+        HttpEntity<Account> accountEntity2 = new HttpEntity<>(accountRequest2, headers);
+
+        ResponseEntity<Account> response1 = restTemplate.postForEntity("/api/accounts", accountEntity1, Account.class);
+        ResponseEntity<Account> response2 = restTemplate.postForEntity("/api/accounts", accountEntity2, Account.class);
+
+        Assertions.assertNotNull(response1);
+        Assertions.assertNotNull(response2);
+
+        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
+
+        Assertions.assertNotNull(response1.getBody());
+        Assertions.assertNotNull(response2.getBody());
+
+        var body1 = response1.getBody();
+        var body2 = response2.getBody();
+
+        var balance1 = body1.getbalance();
+        var balance2 = body2.getbalance();
+
+        var trans = new Transaction(20.0, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, new Account(body1.getId()));
+
+        Integer accountId1 = Integer.valueOf(Math.toIntExact(body1.getId()));
+        Integer accountId2 = Integer.valueOf(Math.toIntExact(body2.getId()));
+        var transbody = new TransactionBody(trans, Integer.valueOf(accountId1), Optional.of(accountId2));
+        HttpEntity<TransactionBody> transactionEntity = new HttpEntity<>(transbody, headers);
+        ResponseEntity<Transaction> transactionResponse = restTemplate.postForEntity("/api/transactions", transactionEntity, Transaction.class);
+        Assertions.assertNotNull(transactionResponse);
+        Assertions.assertEquals(HttpStatus.CREATED, transactionResponse.getStatusCode());
+        Assertions.assertNotNull(transactionResponse.getBody());
+        var accountbalance1 = accountRepository.getAccountById(body1.getId()).get().getbalance();
+        var accountbalance2 = accountRepository.getAccountById(body2.getId()).get().getbalance();
+        Assertions.assertEquals(balance1, accountbalance1 + trans.getAmount());
+        Assertions.assertEquals(balance2, accountbalance2 - trans.getAmount());
     }
 }
