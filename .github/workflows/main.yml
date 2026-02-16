@@ -23,7 +23,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4 
       - name: Check Docker
-        run: docker --version
+        run: |
+         docker --version
+         export DOCKER_API_VERSION=1.44
       - name: Install Latest Docker
         run: |
          sudo apt-get update
