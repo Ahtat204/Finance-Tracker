@@ -1,6 +1,5 @@
 package org.asue24.financetrackerbackend.security;
 
-import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.redis.jedis.cas.JedisBasedProxyManager;
 import jakarta.servlet.FilterChain;
