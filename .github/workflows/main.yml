@@ -21,8 +21,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
-
+        uses: actions/checkout@v4 
+      - name: Check Docker
+        run: docker --version
+      - name: Install Latest Docker
+        run: |
+         sudo apt-get update
+         sudo apt-get install --yes ca-certificates curl gnupg
+         curl -fsSL https://get.docker.com | sudo bash
+         sudo systemctl start docker
       - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:
