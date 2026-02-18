@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.controllers;
 
 import org.antlr.v4.runtime.misc.NotNull;
+import org.asue24.financetrackerbackend.dto.TransactionBody;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.services.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +66,10 @@ public class TransactionController {
      * with the created transaction and HTTP status 200 (OK)
      */
     @PostMapping
-    public ResponseEntity<Transaction> createTransaction(@NotNull @RequestBody Transaction transaction) {
-        var result = transactionService.createTransaction(transaction);
-        if (result != null) return ResponseEntity.badRequest().body(result);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Transaction> createTransaction(@NotNull @RequestBody TransactionBody transaction) {
+        var result = transactionService.createTransaction(transaction.transaction(), transaction.senderId(), transaction.receiverId());
+        if (result == null) return ResponseEntity.badRequest().body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     /**

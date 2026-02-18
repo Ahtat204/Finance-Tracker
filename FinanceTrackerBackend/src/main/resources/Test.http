@@ -16,14 +16,16 @@ Content-Type: application/json
 ###
 POST localhost:8080/api/accounts
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzA5OTQ0NjUsImV4cCI6MTc3MDk5NjI2NX0.pUAw2OdAzRwezlylVQ6iNIrL99vr43xt9uo30izSwsA
 
 {
-  "accountName": "lahcenAhtat",
+  "accountName": "Ahtat",
   "balance": 222,
   "user": {
-    "id": 2122
+    "id": 1
   }
 }
+
 ###
 POST localhost:8080/api/auth/signup
 Content-Type: application/json
@@ -43,4 +45,21 @@ Content-Type: application/json
   "email": "aice.smth@example.com",
   "rawPassword": "SecurePass123!"
 }
+###
+POST localhost:8080/api/transactions
+Content-Type:  application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzEwMTU4ODIsImV4cCI6MTc3MTAxNzY4Mn0.LLa0DMtLAY4gU8W1dh_qGHGqfR4cAj9hqnsnt1KK6yU
 
+{
+  "transaction": {
+    "amount": 20,
+    "transactionDate": "2025-02-03",
+    "Description": "test",
+    "Transactiontype":  "TRANSFER",
+    "account": {
+      "id": "2"
+    }
+  },
+  "receiverId": "1",
+  "senderId": "2"
+}

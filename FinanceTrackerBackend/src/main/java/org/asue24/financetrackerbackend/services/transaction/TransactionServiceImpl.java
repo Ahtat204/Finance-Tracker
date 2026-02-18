@@ -1,11 +1,17 @@
 package org.asue24.financetrackerbackend.services.transaction;
 
+import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.repositories.TransactionRepository;
+import org.asue24.financetrackerbackend.services.account.AccountService;
+import org.asue24.financetrackerbackend.services.caching.CachingService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link TransactionService} interface.
@@ -15,6 +21,7 @@ import java.util.List;
  * Interacts with {@link TransactionRepository} to persist and fetch data from the database.
  * </p>
  */
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
@@ -23,6 +30,9 @@ public class TransactionServiceImpl implements TransactionService {
      */
 
     private final TransactionRepository transactionRepository;
+    private final CachingService<Transaction> redisService;
+    private final AccountService accountService;
+    Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
 
     /**
      * Constructs a new {@code TransactionServiceImpl} with the specified repository.
@@ -30,20 +40,58 @@ public class TransactionServiceImpl implements TransactionService {
      * @param transactionRepository the repository used to manage transactions
      */
     @Autowired
-    public TransactionServiceImpl(TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, CachingService redisService, AccountService accountService) {
         this.transactionRepository = transactionRepository;
+        this.redisService = redisService;
+        this.accountService = accountService;
     }
 
     /**
-     * Creates and persists a new {@link Transaction}.
-     *
      * @param transaction the transaction entity to create
-     * @return the persisted transaction with an assigned identifier
+     * @param senderId
+     * @param receiverId  it's optional because not always we transfer ;
+     * @return
      */
 
     @Override
-    public Transaction createTransaction(Transaction transaction) {
+    public Transaction createTransaction(Transaction transaction, Integer senderId, Optional<Integer> receiverId) {
+        if (transaction == null) {
+            throw new IllegalArgumentException("Transaction cannot be null");
+        }
+
+        var type = transaction.getTransactiontype();
+        transaction.setAccount(new Account(Long.valueOf(senderId)));
+        switch (type) {
+            case EXPENSE -> {
+                var account = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                if (account.getbalance() < transaction.getAmount()) {
+                    throw new IllegalArgumentException("not enough Balance");
+                }
+                account.setBalance(account.getbalance() - transaction.getAmount());
+                accountService.updateAccount(Long.valueOf(senderId), account);
+            }
+            case INCOME -> {
+                var account = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                account.setBalance(account.getbalance() + transaction.getAmount());
+                accountService.updateAccount(Long.valueOf(senderId), account);
+            }
+            case TRANSFER -> {
+                var SenderAccount = accountService.getAccountByAccountId(Long.valueOf(senderId));
+                var ReceiverAccount = accountService.getAccountByAccountId(Long.valueOf(receiverId.get()));
+                if (SenderAccount.getbalance() < transaction.getAmount()) {
+                    throw new IllegalArgumentException("not enough Balance");
+                }
+                SenderAccount.setBalance(SenderAccount.getbalance() - transaction.getAmount());
+                ReceiverAccount.setBalance(ReceiverAccount.getbalance() + transaction.getAmount());
+                accountService.updateAccount(Long.valueOf(senderId), SenderAccount);
+                var account = accountService.updateAccount(Long.valueOf(receiverId.get()), ReceiverAccount);
+
+                logger.info("{account balance is:}" + account);
+            }
+        }
         var Trans = transactionRepository.save(transaction);
+        var AccountId = Trans.getAccount().getId();
+        // redisService.put(Trans.getId().toString(), Trans);
         return Trans;
     }
 
@@ -54,6 +102,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @return {@code true} if the transaction was successfully deleted,
      * {@code false} if it does not exist
      */
+    // @CacheEvict(value = "transactions", key = "#id")
 
     @Override
     public Boolean deleteTransaction(Long id) {
@@ -75,6 +124,7 @@ public class TransactionServiceImpl implements TransactionService {
      * @return the updated transaction after persistence
      * @throws IllegalArgumentException if the transaction does not exist
      */
+    // @CachePut(value = "transactions", key = "#id")
 
     @Override
     public Transaction updateTransaction(Long id, Transaction transaction) {
@@ -86,17 +136,13 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found for update."));
         return result;
     }
-
-    /**
-     * Retrieves a {@link Transaction} by its unique ID.
-     *
-     * @param transactionId the ID of the transaction to retrieve
-     * @return the transaction if found, or {@code null} if not found
-     */
-
     @Override
     public Transaction getTransaction(Long transactionId) throws RuntimeException {
-        var transaction = transactionRepository.findById(transactionId).orElseThrow(() -> new RuntimeException("Transaction not found"));
+        var cached = redisService.get(transactionId.toString());
+        if (cached != null) return cached;
+        var transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+        redisService.put(transactionId.toString(), transaction);
         return transaction;
     }
 

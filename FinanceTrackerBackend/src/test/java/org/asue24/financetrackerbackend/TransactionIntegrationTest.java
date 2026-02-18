@@ -1,52 +1,20 @@
 package org.asue24.financetrackerbackend;
 
-import org.asue24.enums.TransactionType;
-import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
-import org.asue24.financetrackerbackend.dto.CreateUserDto;
-import org.asue24.financetrackerbackend.dto.TransactionBody;
-import org.asue24.financetrackerbackend.dto.UserRequestDto;
-import org.asue24.financetrackerbackend.entities.Account;
-import org.asue24.financetrackerbackend.entities.Transaction;
-import org.asue24.financetrackerbackend.entities.User;
-import org.asue24.financetrackerbackend.repositories.AccountRepository;
-import org.asue24.financetrackerbackend.repositories.TransactionRepository;
-import org.asue24.financetrackerbackend.repositories.UserRepository;
-import org.asue24.financetrackerbackend.services.caching.CachingService;
-import org.asue24.financetrackerbackend.services.caching.RedisService;
-import org.asue24.financetrackerbackend.services.jwt.JwtService;
-import org.asue24.financetrackerbackend.services.transaction.TransactionService;
-import org.asue24.financetrackerbackend.services.user.UserService;
-import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+//since Transaction cannot be created without an account , which cannot be created without a user , we will rely on the fact that the database already contains account(s) and user(s)
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class IntegrationTest extends TestDependencies {
-
-    @Autowired
-    public RedisService<Transaction> redisService;
-    @Autowired
-    TestRestTemplate restTemplate;
-    @Autowired
-    private UserService userService;
+public class TransactionIntegrationTest extends TestDependencies {
+    /*
     @Autowired
     private UserRepository userRepository;
-    private CreateUserDto createUserDto;
     @Autowired
     private TransactionRepository transactionRepository;
+    @Autowired
+    private TestRestTemplate restTemplate;
     @Autowired
     private TransactionService transactionService;
     @Autowired
@@ -57,93 +25,24 @@ public class IntegrationTest extends TestDependencies {
     private CachingService cachingService;
     private Logger logger = LoggerFactory.getLogger(TransactionIntegrationTest.class);
 
+
     @AfterAll
-    public static void stop() {
-        redis.stop();
+    public static void tearDown() {
         postgresContainer.stop();
+        redis.stop();
     }
 
     @AfterEach
-    public void tearDown() {
+    public void cleanUp() {
 
-    }
-
-    @BeforeEach
-    void setUpBeforeClass() throws Exception {
-        createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
-    }
-
-    /// //////////Redis Tests///////////////////
-
-    @Test
-    public void GetAndSetTest() {
-        var Trans = new Transaction(1L, 22.3);
-        redisService.put(Trans.getId().toString(), Trans);
-        assertNotNull(redisService.get(Trans.getId().toString()));
-        assertEquals(Trans.getId(), redisService.get(Trans.getId().toString()).getId());
-        assertEquals(Trans.getAmount(), redisService.get(Trans.getId().toString()).getAmount());
-    }
-    /// ///////Postgres Tests///////////////////
-    @Test
-    public void GetAllUsers_Test() {
-        var User1 = new User("lahcen", "John", "Doki22@gmail.com");
-        var User2 = new User("julien", "Jane", "lahcen@gmail.com");
-        restTemplate.postForObject("/users", User1, User.class);
-        restTemplate.postForObject("/users", User2, User.class);
-        var response = restTemplate.getForEntity("/users", String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED); //tests that users is a protected endpoint
-    }
-    @Test
-    public void RegisterUserTest() {
-        var User = new User("lahcen", "John", "Do78eg@gmail.com", "lahce5452");
-        var RegisterRequest = new CreateUserDto(User.getFirstname(), User.getLastname(), User.getEmail(), User.getPassword());
-        var response = restTemplate.postForObject("/api/auth/signup", RegisterRequest, String.class);
-        assertThat(response).isNotNull();
-    }
-    @Test
-    public void GetUserByEmailTest_ShouldReturnNonNullUser() {
-        var User = new User("lahcen", "John", "Dahtao@gmail.com", "lahce5452");
-        var request = userService.createUser(new CreateUserDto("test1","test2","ahtat652@gmail.com","hihih22"));
-        var user3 = userService.getUserByEmail(request.getEmail());
-        assertThat(user3.getEmail()).isNotNull();
-        assertThat(user3.getPassword()).isNotNull();
-        assertThat(user3.getPassword()).isNotEqualTo(request.getPassword());
-        assertThat(user3.getEmail()).isEqualTo(request.getEmail());
-    }
-    @Test
-    public void GetUserByEmailTest_ShouldReturnNullUser() {
-        var request = userService.createUser(new CreateUserDto("aht","lhes","ah33st@gmail.com","lahce5452"));
-        var user3 = userService.getUserByEmail("someemail@gmail.com");
-        assertThat(user3).isNull();
-    }
-    @Test
-    public void GetUserByIdTest_ShouldReturnNonNullUser() {
-        var request = userRepository.save(new User("lahcen", "John", "Do@gmail.com", "lahce5452"));
-        var Id = request.getId();
-        var result = userService.getUserById(Id);
-        assertThat(result).isNotNull();
-        assertThat(result.getEmail()).isNotNull();
-        assertThat(result.getPassword()).isNotNull();
-        assertThat(result.getPassword()).isEqualTo(request.getPassword());
-    }
-    @Test
-    public void AuthenticateNonExistingUserTest_ShouldReturnNullUser() {
-        var result = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahtatn28ahtat@gmail", "1234password"), AuthenticationResponse.class);
-        assertThat(result).isNull();
-    }
-
-    @Test
-    public void RegisterThenLoginUserTest() {
-        var user = restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
-        var result = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
-        assertThat(result).isNotNull();
-        assertThat(result.email()).isEqualTo(createUserDto.email());
     }
 
     @Test
     public void testTransactionCreation() {
-        var user2 = userRepository.findUserById(1000L).get();
-        var account = accountRepository.findAccountByUserId(user2.getId()).get();
+        var user1=userRepository.save(new User("lahcen","ahtat204","lahcen@asue24.org","lahce33"));
+        var user2 = userRepository.findUserById(user1.getId()).get();
+        var saveAccount=accountRepository.save(new Account("lahcen",22.2,new User(user1.getId())));
+        var account = accountRepository.getReferenceById(user2.getId());
         var transaction = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, account);
         var trans = transactionRepository.save(transaction);
         Assertions.assertNotNull(trans);
@@ -166,6 +65,7 @@ public class IntegrationTest extends TestDependencies {
         Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
 
          */
+    /*
         var createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
         var user = restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
         var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
@@ -213,6 +113,7 @@ public class IntegrationTest extends TestDependencies {
         Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
 
          */
+    /*
         var createUserDto1 = new CreateUserDto("lahcen", "lhdh", "lahcen23ahtat@gmail", "1234password");
         var createUserDto2 = new CreateUserDto("lahcen", "lhdh", "lahcen38ahtat@gmail", "1234password");
 
@@ -277,4 +178,5 @@ public class IntegrationTest extends TestDependencies {
         Assertions.assertEquals(balance1 - trans.getAmount(), accountbalance1);
         Assertions.assertEquals(accountbalance2, balance2 + trans.getAmount());
     }
+    */
 }

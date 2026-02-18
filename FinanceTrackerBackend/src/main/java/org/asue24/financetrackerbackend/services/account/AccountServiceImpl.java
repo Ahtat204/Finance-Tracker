@@ -82,6 +82,14 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public double UpdateAccount(Long id, double amount) {
+        accountRepository.findById(id).ifPresent(existing->{
+            existing.setBalance(existing.getbalance() + amount);
+        });
+        return amount;
+    }
+
     /**
      * Retrieves an {@link Account} by its unique ID.
      *
