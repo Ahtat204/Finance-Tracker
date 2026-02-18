@@ -22,10 +22,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4 
-      - name: Check Docker
-        run: |
-         docker --version
-         export DOCKER_API_VERSION=1.44
+      - name: Set Docker API version
+        run: echo "api.version=1.44" >> ~/.docker-java.properties
       - name: Install Latest Docker
         run: |
          sudo apt-get update
