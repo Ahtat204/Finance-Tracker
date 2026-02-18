@@ -86,7 +86,7 @@ public class IntegrationTest extends TestDependencies {
     /// ///////Postgres Tests///////////////////
     @Test
     public void GetAllUsers_Test() {
-        var User1 = new User("lahcen", "John", "Do@gmail.com");
+        var User1 = new User("lahcen", "John", "Doki22@gmail.com");
         var User2 = new User("julien", "Jane", "lahcen@gmail.com");
         restTemplate.postForObject("/users", User1, User.class);
         restTemplate.postForObject("/users", User2, User.class);
@@ -95,15 +95,15 @@ public class IntegrationTest extends TestDependencies {
     }
     @Test
     public void RegisterUserTest() {
-        var User = new User("lahcen", "John", "Do@gmail.com", "lahce5452");
+        var User = new User("lahcen", "John", "Do78eg@gmail.com", "lahce5452");
         var RegisterRequest = new CreateUserDto(User.getFirstname(), User.getLastname(), User.getEmail(), User.getPassword());
         var response = restTemplate.postForObject("/api/auth/signup", RegisterRequest, String.class);
         assertThat(response).isNotNull();
     }
     @Test
     public void GetUserByEmailTest_ShouldReturnNonNullUser() {
-        var User = new User("lahcen", "John", "Do@gmail.com", "lahce5452");
-        var request = userService.createUser(createUserDto);
+        var User = new User("lahcen", "John", "Dahtao@gmail.com", "lahce5452");
+        var request = userService.createUser(new CreateUserDto("test1","test2","ahtat652@gmail.com","hihih22"));
         var user3 = userService.getUserByEmail(request.getEmail());
         assertThat(user3.getEmail()).isNotNull();
         assertThat(user3.getPassword()).isNotNull();
@@ -112,7 +112,7 @@ public class IntegrationTest extends TestDependencies {
     }
     @Test
     public void GetUserByEmailTest_ShouldReturnNullUser() {
-        var request = userService.createUser(createUserDto);
+        var request = userService.createUser(new CreateUserDto("aht","lhes","ah33st@gmail.com","lahce5452"));
         var user3 = userService.getUserByEmail("someemail@gmail.com");
         assertThat(user3).isNull();
     }
@@ -128,7 +128,7 @@ public class IntegrationTest extends TestDependencies {
     }
     @Test
     public void AuthenticateNonExistingUserTest_ShouldReturnNullUser() {
-        var result = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
+        var result = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahtatn28ahtat@gmail", "1234password"), AuthenticationResponse.class);
         assertThat(result).isNull();
     }
 
@@ -142,10 +142,8 @@ public class IntegrationTest extends TestDependencies {
 
     @Test
     public void testTransactionCreation() {
-        var user1=userRepository.save(new User("lahcen","ahtat204","lahcen@asue24.org","lahce33"));
-        var user2 = userRepository.findUserById(user1.getId()).get();
-        var saveAccount=accountRepository.save(new Account("lahcen",22.2,new User(user1.getId())));
-        var account = accountRepository.getReferenceById(user2.getId());
+        var user2 = userRepository.findUserById(1000L).get();
+        var account = accountRepository.findAccountByUserId(user2.getId()).get();
         var transaction = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.EXPENSE, account);
         var trans = transactionRepository.save(transaction);
         Assertions.assertNotNull(trans);
