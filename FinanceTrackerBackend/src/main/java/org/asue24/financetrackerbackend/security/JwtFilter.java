@@ -84,7 +84,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             var id=request.getAttribute("id");
             if (id == null) {
-                request.setAttribute("id", jwtService.extractemail(token));
+                request.setAttribute("id", jwtService.extractId(token));
             }
              // passes the userId to be used in the next Filter, which the IdBasedRateLimitingFilter
         }

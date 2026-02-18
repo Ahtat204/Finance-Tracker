@@ -1,6 +1,5 @@
 package org.asue24.financetrackerbackend.security;
 
-import io.github.bucket4j.Bucket;
 import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.redis.jedis.cas.JedisBasedProxyManager;
 import jakarta.servlet.FilterChain;
@@ -31,8 +30,6 @@ public class IpBasedRateLimitingFilter extends OncePerRequestFilter {
          var bucket=jedisBasedProxyManager.builder().build(clientIpAddress,bucketConfigurationSupplier);
         if(bucket.tryConsume(1)) {
             filterChain.doFilter(request, response);
-            var tokens=bucket.tryConsumeAndReturnRemaining(1);
-            logger.debug("remaining tokens are :"+tokens.getRemainingTokens()+"and"+bucket.getAvailableTokens());
         }
         else{
             response.setStatus(429);

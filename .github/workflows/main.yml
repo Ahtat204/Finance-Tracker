@@ -23,6 +23,7 @@ jobs:
 
     steps:
       - name: Checkout code
+<<<<<<< transactional_Operations
         uses: actions/checkout@v4
 
    
@@ -30,6 +31,17 @@ jobs:
       - name: Set Docker API version
         run: echo "api.version=1.44" >> ~/.docker-java.properties
 
+=======
+        uses: actions/checkout@v4 
+      - name: Set Docker API version
+        run: echo "api.version=1.44" >> ~/.docker-java.properties
+      - name: Install Latest Docker
+        run: |
+         sudo apt-get update
+         sudo apt-get install --yes ca-certificates curl gnupg
+         curl -fsSL https://get.docker.com | sudo bash
+         sudo systemctl start docker
+>>>>>>> main
       - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:

@@ -28,7 +28,7 @@ public class IdBasedRateLimitingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        var clientId = request.getHeader("id");
+        var clientId = request.getAttribute("id");//plan to do better here
         if (clientId != null) {
             var bucket = jedisBasedProxyManager.builder().build(clientId,bucketConfigurationSupplier);
             if(bucket.tryConsume(1)) {
