@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup Docker environment
         run: |
-          mvn -rf ~/.m2/repository
+          mvn  ~/.m2/repository
 
       - name: Set Docker API version
         run: echo "api.version=1.44" >> ~/.docker-java.properties
