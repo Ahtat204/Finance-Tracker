@@ -25,9 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Docker environment
-        run: |
-          mvn  ~/.m2/repository
+   
 
       - name: Set Docker API version
         run: echo "api.version=1.44" >> ~/.docker-java.properties
