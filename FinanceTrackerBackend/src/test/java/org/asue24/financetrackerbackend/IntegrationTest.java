@@ -166,9 +166,9 @@ public class IntegrationTest extends TestDependencies {
         Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
 
          */
-        var createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen28ahtat@gmail", "1234password");
+        var createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen290ahtat@gmail", "1234password");
         var user = restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
-        var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen28ahtat@gmail", "1234password"), AuthenticationResponse.class);
+        var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen290ahtat@gmail", "1234password"), AuthenticationResponse.class);
         Assertions.assertNotNull(result1);
         var token = result1.jwtToken();
         var claims = jwtService.extractAllClaims(token);
