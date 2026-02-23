@@ -1,6 +1,7 @@
 package org.asue24.financetrackerbackend.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,18 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * It enables Web Security and configures a stateless session policy. */
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
-
-        this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
-    }
-
     /** * Defines the password encoder bean used across the application.
      *  @return A {@link BCryptPasswordEncoder} instance for secure password hashing. */
     @Bean

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,16 +16,11 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 @Component
+@AllArgsConstructor
 @Order(3)
 public class IdBasedRateLimitingFilter extends OncePerRequestFilter {
     private final JedisBasedProxyManager jedisBasedProxyManager;
     private final Supplier<BucketConfiguration> bucketConfigurationSupplier;
-
-    @Autowired
-    public IdBasedRateLimitingFilter(JedisBasedProxyManager jedisBasedProxyManager, Supplier<BucketConfiguration> bucketConfigurationSupplier) {
-        this.jedisBasedProxyManager = jedisBasedProxyManager;
-        this.bucketConfigurationSupplier = bucketConfigurationSupplier;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -16,14 +17,10 @@ import java.util.function.Supplier;
 
 @Component
 @Order(1)
+@AllArgsConstructor
 public class IpBasedRateLimitingFilter extends OncePerRequestFilter {
     private final JedisBasedProxyManager jedisBasedProxyManager;
     private final Supplier<BucketConfiguration> bucketConfigurationSupplier;
-    @Autowired
-    public IpBasedRateLimitingFilter(JedisBasedProxyManager jedisBasedProxyManager, Supplier<BucketConfiguration> bucketConfigurationSupplier) {
-        this.jedisBasedProxyManager = jedisBasedProxyManager;
-        this.bucketConfigurationSupplier = bucketConfigurationSupplier;
-    }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var clientIpAddress = request.getRemoteAddr();

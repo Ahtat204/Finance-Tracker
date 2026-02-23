@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
+import org.asue24.financetrackerbackend.exceptions.customexception.ValueNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,7 @@ public class JwtServiceImpl implements JwtService {
      */
     @Override
     public Key getSignKey() {
+        if(JwtSecret.isBlank()) throw new ValueNotFoundException("JWT Secret is blank");
         var keyBytes = Decoders.BASE64.decode(JwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }

@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
@@ -26,15 +27,10 @@ import java.io.IOException;
  */
 @Order(2)
 @Component
+@AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userService;
     private final JwtService jwtService;
-
-    @Autowired
-    public JwtFilter(UserDetailsService userService, JwtService jwtService) {
-        this.userService = userService;
-        this.jwtService = jwtService;
-    }
 
     /**
      * /** * Determines whether the given request should be excluded from filtering.
