@@ -8,7 +8,10 @@ import org.asue24.financetrackerbackend.dto.UserRequestDto;
 import org.asue24.financetrackerbackend.services.jwt.JwtService;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.StandardEnvironment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Filter responsible for validating JWT
@@ -29,7 +33,8 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsService userService;
     private final JwtService jwtService;
-
+    @Autowired
+    ConfigurableEnvironment environment ;
     @Autowired
     public JwtFilter(UserDetailsService userService, JwtService jwtService) {
         this.userService = userService;
@@ -48,7 +53,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)  {
         var path = request.getRequestURI();
-        return path.startsWith("/api/auth");
+        return path.startsWith("/api/auth") || path.startsWith("/actuator/prometheus");
     }
 
 
@@ -63,6 +68,11 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var AuthHeader = request.getHeader("Authorization");
+
+        if (Arrays.asList(environment.getActiveProfiles()).contains("dev")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         if (AuthHeader == null || !AuthHeader.startsWith("Bearer ")) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Authorization header must be provided in 'Bearer <token>' format.");
             return;

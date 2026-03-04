@@ -12,17 +12,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(final UserNotFoundException ex, final HttpServletRequest request) {
-        var errormessage = new ErrorResponse("NOT_FOUND", ex.getMessage());
+        var errormessage = new ErrorResponse("user not found", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errormessage);
     }
-/*
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAll(Exception ex) {
-        ErrorResponse err = new ErrorResponse("INTERNAL_ERROR", "An unexpected error occurred");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
-    }
-    */
-
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(final AuthenticationException ex) {
         var errormessage = new ErrorResponse("AUTHENTICATION_ERROR", ex.getMessage());

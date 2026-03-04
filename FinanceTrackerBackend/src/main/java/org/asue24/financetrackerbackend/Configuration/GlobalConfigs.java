@@ -11,16 +11,11 @@ import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
 import io.github.bucket4j.distributed.serialization.Mapper;
 import io.github.bucket4j.redis.jedis.Bucket4jJedis;
 import io.github.bucket4j.redis.jedis.cas.JedisBasedProxyManager;
-import io.micrometer.observation.ObservationFilter;
 import org.asue24.financetrackerbackend.entities.Transaction;
+import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.boot.actuate.metrics.export.prometheus.PrometheusScrapeEndpoint;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -28,8 +23,10 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
@@ -46,7 +43,12 @@ public class GlobalConfigs {
     @Value("${spring.data.redis.port}")
     int port;
 
+    private final UserDetailsService userDetailsService;
     Long RequestLimit=40L;
+
+    public GlobalConfigs(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
@@ -54,6 +56,16 @@ public class GlobalConfigs {
                 entryTtl(Duration.ofMinutes(10)).
                 prefixCacheNameWith("transaction:")
                 .disableCachingNullValues();
+    }
+
+    /**
+     * Defines the password encoder bean used across the application.
+     *
+     * @return A {@link BCryptPasswordEncoder} instance for secure password hashing.
+     */
+    @Bean
+    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -97,17 +109,17 @@ public class GlobalConfigs {
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
-    @Bean
-    public SecurityFilterChain actuatorSecurity(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher(EndpointRequest.toAnyEndpoint()) // applies only to actuator endpoints
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(EndpointRequest.to(PrometheusScrapeEndpoint.class)).permitAll()
-                        .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
-                        .anyRequest().denyAll()
-                )
-                .csrf(csrf -> csrf.disable()); // Prometheus doesn't use CSRF
-        return http.build();
-    }
 
+
+    /** * Configures and provides the {@link AuthenticationManager} bean.
+     *  This manager uses the custom {@link UserDetailsService} and the defined
+     *  {@link BCryptPasswordEncoder} to validate user credentials.
+     *  @param http The HttpSecurity object. * @return The configured AuthenticationManager.
+     *  @throws Exception If the configuration fails. */
+    @Bean
+    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
+        var authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+        return authenticationManagerBuilder.build();
+    }
 }

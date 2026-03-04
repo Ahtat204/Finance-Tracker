@@ -1,10 +1,15 @@
 package org.asue24.financetrackerbackend.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.asue24.financetrackerbackend.services.user.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.metrics.export.prometheus.PrometheusScrapeEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,32 +20,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.asue24.financetrackerbackend.Configuration.GlobalConfigs.bCryptPasswordEncoder;
+
 
 /** * Main security configuration class for the application.
  * This class defines the security filter chain, password encoding mechanisms,
  * and authorization rules for different API endpoints.
  * It enables Web Security and configures a stateless session policy. */
 @Configuration
-@EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfig {
-
     private final JwtFilter jwtFilter;
-    private final UserDetailsService userDetailsService;
-
-    @Autowired
-    public SecurityConfig(JwtFilter jwtFilter, UserDetailsService userDetailsService) {
-
-        this.jwtFilter = jwtFilter;
-        this.userDetailsService = userDetailsService;
-    }
-
-    /** * Defines the password encoder bean used across the application.
-     *  @return A {@link BCryptPasswordEncoder} instance for secure password hashing. */
-    @Bean
-    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     /** * Configures the {@link SecurityFilterChain} to define which HTTP requests are protected.
      *  This method handles: * <ul> * <li>Disabling CSRF and HTTP Basic authentication.
      *  </li> * <li>Permitting all requests to authentication endpoints.</li> * <li>Restricting user management endpoints to ADMIN roles.
@@ -50,12 +40,14 @@ public class SecurityConfig {
      *  * @return The built SecurityFilterChain. * @throws Exception If an error occurs during configuration. */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http.
+                csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults()).securityMatcher("/actuator/prometheus")
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll().requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/user/**").hasRole("ADMIN")
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).denyAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((request, response, authException) ->
@@ -65,19 +57,6 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-
-    /** * Configures and provides the {@link AuthenticationManager} bean.
-     *  This manager uses the custom {@link UserDetailsService} and the defined
-     *  {@link BCryptPasswordEncoder} to validate user credentials.
-     *  @param http The HttpSecurity object. * @return The configured AuthenticationManager.
-     *  @throws Exception If the configuration fails. */
-    @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
-        var authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-        return authenticationManagerBuilder.build();
     }
 
 }
