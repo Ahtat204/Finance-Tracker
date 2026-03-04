@@ -43,13 +43,8 @@ public class GlobalConfigs {
     @Value("${spring.data.redis.port}")
     int port;
 
-    private final UserDetailsService userDetailsService;
+
     Long RequestLimit=40L;
-
-    public GlobalConfigs(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
-
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig().
@@ -63,10 +58,6 @@ public class GlobalConfigs {
      *
      * @return A {@link BCryptPasswordEncoder} instance for secure password hashing.
      */
-    @Bean
-    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
@@ -110,16 +101,4 @@ public class GlobalConfigs {
         return mapper;
     }
 
-
-    /** * Configures and provides the {@link AuthenticationManager} bean.
-     *  This manager uses the custom {@link UserDetailsService} and the defined
-     *  {@link BCryptPasswordEncoder} to validate user credentials.
-     *  @param http The HttpSecurity object. * @return The configured AuthenticationManager.
-     *  @throws Exception If the configuration fails. */
-    @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
-        var authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-        return authenticationManagerBuilder.build();
-    }
 }

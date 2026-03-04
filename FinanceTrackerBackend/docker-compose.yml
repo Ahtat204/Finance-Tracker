@@ -50,6 +50,8 @@ services:
     restart: unless-stopped
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      finance-tracker:
 
 volumes:
   postgres_data:

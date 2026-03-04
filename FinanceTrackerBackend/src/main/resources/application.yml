@@ -28,9 +28,11 @@ management:
       show-details: always
       cache:
         time-to-live: 0ms
+
     metrics:
       tags:
         application: FinanceTrackerBackend
+
 
 server:
   port: 8080
@@ -39,8 +41,6 @@ logging:
   logback:
     rollingpolicy:
       clean-history-on-start:
-  file:
-    name: C:\Users\lahce\IdeaProjects\FinanceTracker\FinanceTrackerBackend\src\main\resources\logs.log
 
 jwt_secret: ${JWT_SECRET}
 bucket_size: 20

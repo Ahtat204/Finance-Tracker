@@ -88,7 +88,7 @@ public class IntegrationTest extends TestDependencies {
     public void GetAllUsers_Test() {
         var User1 = new User("lahcen", "John", "Doki22@gmail.com");
         var User2 = new User("julien", "Jane", "lahcen@gmail.com");
-        restTemplate.postForObject("/users", User1, User.class);
+        var resp=restTemplate.postForObject("/users", User1, User.class);
         restTemplate.postForObject("/users", User2, User.class);
         var response = restTemplate.getForEntity("/users", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED); //tests that users is a protected endpoint
@@ -151,21 +151,6 @@ public class IntegrationTest extends TestDependencies {
 
     @Test
     public void CreateExpenseTransactionTest() {
-          /*
-        var user1 = userRepository.findUserById(1L);
-        var user2 = userRepository.findUserById(2L);
-        if (!user1.isPresent() && !user2.isPresent()) return;
-        var value1 = user1.get();
-        var value2 = user2.get();
-        var account1 = accountRepository.getById(value1.getId());
-        var account2 = accountRepository.getById(value2.getId());
-        var trans = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, account1);
-        var result = transactionService.createTransaction(trans, 2, Optional.of(3));
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(account1.getbalance(), account1.getbalance() + trans.getAmount());
-        Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
-
-         */
         var createUserDto = new CreateUserDto("lahcen", "lhdh", "lahcen290ahtat@gmail", "1234password");
         var user = restTemplate.postForObject("/api/auth/signup", createUserDto, String.class);
         var result1 = restTemplate.postForObject("/api/auth/login", new UserRequestDto("lahcen290ahtat@gmail", "1234password"), AuthenticationResponse.class);
@@ -198,21 +183,6 @@ public class IntegrationTest extends TestDependencies {
 
     @Test
     public void CreateTransferTransactionTest() {
-          /*
-        var user1 = userRepository.findUserById(1L);
-        var user2 = userRepository.findUserById(2L);
-        if (!user1.isPresent() && !user2.isPresent()) return;
-        var value1 = user1.get();
-        var value2 = user2.get();
-        var account1 = accountRepository.getById(value1.getId());
-        var account2 = accountRepository.getById(value2.getId());
-        var trans = new Transaction(10.1, LocalDate.now(), "testing Transaction", TransactionType.TRANSFER, account1);
-        var result = transactionService.createTransaction(trans, 2, Optional.of(3));
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(account1.getbalance(), account1.getbalance() + trans.getAmount());
-        Assertions.assertEquals(account2.getbalance(), account2.getbalance() - trans.getAmount());
-
-         */
         var createUserDto1 = new CreateUserDto("lahcen", "lhdh", "lahcen23ahtat@gmail", "1234password");
         var createUserDto2 = new CreateUserDto("lahcen", "lhdh", "lahcen38ahtat@gmail", "1234password");
 
