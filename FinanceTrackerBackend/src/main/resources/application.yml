@@ -15,6 +15,7 @@ spring:
     user:
       name: aice.smth@example.com
       password: SecurePass123!
+      roles: admin
 
 management:
   endpoints:

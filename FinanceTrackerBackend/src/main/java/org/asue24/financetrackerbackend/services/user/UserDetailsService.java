@@ -17,11 +17,9 @@ import java.util.ArrayList;
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     private final UserRepository userRepository;
-
     public UserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     /** * Locates the user based on the provided email address.
      *  @param email The email identifying the user whose data is required.
      *  @return A fully populated {@link UserDetails} object required for authentication.
@@ -32,4 +30,5 @@ public class UserDetailsService implements org.springframework.security.core.use
         return new User(user.getEmail(),user.getPassword(),new ArrayList<>());
 
     }
+
 }
