@@ -7,27 +7,14 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      dl-auto: validate
 
   data:
     redis:
       host: ${REDIS_HOST}
       port: 6379
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info, promethus
-  endpoint:
-    prometheus:
-      enabled: true
-  metrics:
-    tags:
-      application: my-spring-app
-  server:
-    port: 8080
-
 logging:
   level:
-    root: info
+    sql: trace
+    root: trace
+    org.springframework: trace

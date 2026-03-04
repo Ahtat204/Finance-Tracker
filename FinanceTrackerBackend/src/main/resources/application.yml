@@ -12,6 +12,26 @@ spring:
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+management:
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include:
+          - prometheus
+  endpoint:
+    prometheus:
+      enabled: true
+      access: read-only
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: FinanceTrackerBackend
+
+server:
+  port: 8080
+
 logging:
   logback:
     rollingpolicy:

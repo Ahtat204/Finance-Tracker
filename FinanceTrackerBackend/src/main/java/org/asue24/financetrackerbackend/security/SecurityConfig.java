@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll().requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/user/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling

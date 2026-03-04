@@ -63,3 +63,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb
   "receiverId": "1",
   "senderId": "2"
 }
+###
+GET localhost:8080/actuator/prometheus
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzI2NDY5NzksImV4cCI6MTc3MjY0ODc3OX0.HYX_Cj5Sxg6KAqVj0Y2smDonvkQvw-GGKAxsFLzNEf0

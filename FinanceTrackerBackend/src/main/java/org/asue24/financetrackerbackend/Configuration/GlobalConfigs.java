@@ -11,8 +11,13 @@ import io.github.bucket4j.distributed.ExpirationAfterWriteStrategy;
 import io.github.bucket4j.distributed.serialization.Mapper;
 import io.github.bucket4j.redis.jedis.Bucket4jJedis;
 import io.github.bucket4j.redis.jedis.cas.JedisBasedProxyManager;
+import io.micrometer.observation.ObservationFilter;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.actuate.health.HealthEndpoint;
+import org.springframework.boot.actuate.metrics.export.prometheus.PrometheusScrapeEndpoint;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -23,6 +28,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
@@ -89,6 +96,18 @@ public class GlobalConfigs {
         mapper.registerModule(new Jdk8Module());
         mapper.registerModule(new JavaTimeModule());
         return mapper;
+    }
+    @Bean
+    public SecurityFilterChain actuatorSecurity(HttpSecurity http) throws Exception {
+        http
+                .securityMatcher(EndpointRequest.toAnyEndpoint()) // applies only to actuator endpoints
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(EndpointRequest.to(PrometheusScrapeEndpoint.class)).permitAll()
+                        .requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
+                        .anyRequest().denyAll()
+                )
+                .csrf(csrf -> csrf.disable()); // Prometheus doesn't use CSRF
+        return http.build();
     }
 
 }
