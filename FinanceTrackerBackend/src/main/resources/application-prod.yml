@@ -15,6 +15,6 @@ spring:
       port: 6379
 logging:
   level:
-    sql: ino
+    sql: info
     root: info
     org.springframework: info

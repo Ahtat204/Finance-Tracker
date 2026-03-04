@@ -6,10 +6,9 @@ COPY .mvn .mvn
 COPY src ./src
 RUN ./mvnw dependency:go-offline -B
 RUN ./mvnw clean package -DskipTests
-
 FROM gcr.io/distroless/java17-debian12:nonroot
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 USER nonroot
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "app.jar"]

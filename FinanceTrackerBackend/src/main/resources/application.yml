@@ -24,7 +24,6 @@ management:
   endpoint:
     prometheus:
       access: unrestricted
-      enabled: on
     health:
       show-details: always
       cache:
