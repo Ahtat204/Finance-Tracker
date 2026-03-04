@@ -19,6 +19,14 @@ management:
     web:
       exposure:
         include: health, info, promethus
+  endpoint:
+    prometheus:
+      enabled: true
+  metrics:
+    tags:
+      application: my-spring-app
+  server:
+    port: 8080
 
 logging:
   level:
