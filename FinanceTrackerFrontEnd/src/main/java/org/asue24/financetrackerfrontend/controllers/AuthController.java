@@ -25,6 +25,7 @@ public class AuthController {
 
     @FXML
     public LoginResponse Login(LoginRequest lRequest) throws IOException, InterruptedException, URISyntaxException {
+      /*
         var httpClient=HttpClient.newHttpClient();
         var bodyJson=new Gson().toJson(lRequest);
         var request = HttpRequest.newBuilder(new URI(url))
@@ -34,5 +35,8 @@ public class AuthController {
                 .build();
         populateRequestFields(request, bodyJson);
         HttpResponse<String> response=httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+       */
+        return null;
     }
 }
