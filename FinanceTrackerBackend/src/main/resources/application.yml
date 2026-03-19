@@ -13,10 +13,9 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   security:
     user:
-      name: aice.smth@example.com
-      password: SecurePass123!
+      name: ${ADMIN_EMAIL}
+      password: ${ADMIN_PASSWORD}
       roles: admin
-
 management:
   endpoints:
     web:
@@ -33,15 +32,15 @@ management:
     metrics:
       tags:
         application: FinanceTrackerBackend
-
-
 server:
   port: 8080
-
+admin:
+  email: ${ADMIN_EMAIL}
+  password: ${ADMIN_PASSWORD}
 logging:
   logback:
     rollingpolicy:
       clean-history-on-start:
-
 jwt_secret: ${JWT_SECRET}
 bucket_size: 20
+
