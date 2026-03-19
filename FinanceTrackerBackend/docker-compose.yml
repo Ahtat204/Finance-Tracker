@@ -34,9 +34,13 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_ENVIRONMENT}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       REDIS_HOST: redis_cache
+      ADMIN_EMAIL: aice.smth@example.com
+      ADMIN_PASSWORD: SecurePass123!
       JWT_SECRET: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJpQV30
     ports:
       - "${APP_PORT}:8080"
+    expose:
+      - "8081"
     networks:
       - finance-tracker
   prometheus:
