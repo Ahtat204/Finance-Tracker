@@ -44,8 +44,8 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/**","/actuator/**").authenticated()
+                        .requestMatchers("/api/auth/**").permitAll().requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((request, response, authException) ->
