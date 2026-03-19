@@ -66,4 +66,4 @@ jobs:
           context: ./FinanceTrackerBackend
           file: ./FinanceTrackerBackend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/spring-boot-api:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/financetracker:latest
