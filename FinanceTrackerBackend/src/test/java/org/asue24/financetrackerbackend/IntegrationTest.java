@@ -220,7 +220,7 @@ public class IntegrationTest extends TestDependencies {
         Assertions.assertNotNull(response1);
         Assertions.assertNotNull(response2);
 
-        Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+            Assertions.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
         Assertions.assertEquals(HttpStatus.CREATED, response2.getStatusCode());
 
         Assertions.assertNotNull(response1.getBody());

@@ -36,3 +36,5 @@ logging:
       clean-history-on-start:
 jwt_secret: ${JWT_SECRET}
 bucket_size: 20
+ADMIN_EMAIL: aice.smth@example.com
+ADMIN_PASSWORD: SecurePass123!
