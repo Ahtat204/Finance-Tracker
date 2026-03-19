@@ -1,41 +1,28 @@
-name: CI/CD pipeline to DockerHub
-
+name: CI
 on:
-  push:
-    branches:
-      - main
-  workflow_run:
-      workflows: ["CodeQL"]
-      types:
-        - completed
+  pull_request:
+    branches: 
+     - "main" 
   workflow_dispatch:
-
 jobs:
   build-deploy:
     name: Build and Deploy Spring API
     runs-on: ubuntu-latest
-
     env:
       SPRING_DATASOURCE_URL: ${{ secrets.TEST_DB_URL }}
       SPRING_PROFILES_ACTIVE: test
       JWT_SECRET: ${{ secrets.JWT_KEY }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-
-
       - name: Set Docker API version
         run: echo "api.version=1.44" >> ~/.docker-java.properties
-
       - name: Setup JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: 'corretto'
           java-version: '17'
           cache: 'maven'
-
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
@@ -43,27 +30,10 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-
       - name: Build and Test
         working-directory: ./FinanceTrackerBackend
         run: |
           export jwt_secret=${{ secrets.JWT_KEY }}
           export SPRING_ENVIRONMENT=test
           chmod +x mvnw
-          ./mvnw clean package -B --file pom.xml -X
-
-      - name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      - name: Build and Push Docker Image
-        if: github.event_name != 'pull_request'
-        uses: docker/build-push-action@v4
-        with:
-          context: ./FinanceTrackerBackend
-          file: ./FinanceTrackerBackend/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/financetracker:latest
+          ./mvnw clean verify -B --file pom.xml 
