@@ -63,3 +63,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb
   "receiverId": "1",
   "senderId": "2"
 }
+###
+POST localhost:8080/actuator/metrics
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzI2NjY1MTEsImV4cCI6MTc3MjY2ODMxMX0.c89W66G7KNvd7K-3DlA-nJQ2w0qcO_caHGb4Sb-oAuw
+Content-Type: application/json
+
+{
+  "username": "aice.smth@example.com",
+  "password": "SecurePass123!"
+}

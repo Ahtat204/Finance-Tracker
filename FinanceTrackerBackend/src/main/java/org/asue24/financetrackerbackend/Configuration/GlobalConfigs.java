@@ -15,7 +15,6 @@ import org.asue24.financetrackerbackend.entities.Transaction;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -23,6 +22,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Protocol;
@@ -39,8 +39,8 @@ public class GlobalConfigs {
     @Value("${spring.data.redis.port}")
     int port;
 
-    Long RequestLimit=40L;
 
+    Long RequestLimit=40L;
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig().
@@ -48,6 +48,12 @@ public class GlobalConfigs {
                 prefixCacheNameWith("transaction:")
                 .disableCachingNullValues();
     }
+
+    /**
+     * Defines the password encoder bean used across the application.
+     *
+     * @return A {@link BCryptPasswordEncoder} instance for secure password hashing.
+     */
 
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {

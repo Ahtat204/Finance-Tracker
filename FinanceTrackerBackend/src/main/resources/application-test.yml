@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  data:
+    redis:
+      host:
+      port:
+logging:
+  level:
+    org.springframework: debug
+    com.zaxxer.hikari: debug
+    root: debug
+    sql: debug
+    web: debug
+jwt_secret: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJpQV30"
+bucket_size: 40

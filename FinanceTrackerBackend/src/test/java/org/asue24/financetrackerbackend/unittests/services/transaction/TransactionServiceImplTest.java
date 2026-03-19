@@ -1,7 +1,7 @@
 package org.asue24.financetrackerbackend.unittests.services.transaction;
 
 
-import org.asue24.enums.TransactionType;
+import org.asue24.financetrackerbackend.enums.TransactionType;
 import org.asue24.financetrackerbackend.entities.Account;
 import org.asue24.financetrackerbackend.entities.Transaction;
 import org.asue24.financetrackerbackend.entities.User;

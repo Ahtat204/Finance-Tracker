@@ -2,12 +2,11 @@ package org.asue24.financetrackerbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.asue24.enums.TransactionType;
+import org.asue24.financetrackerbackend.enums.TransactionType;
 
 import java.time.LocalDate;
 
