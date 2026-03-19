@@ -1,6 +1,6 @@
 package org.asue24.financetrackerbackend;
 
-import org.asue24.enums.TransactionType;
+import org.asue24.financetrackerbackend.enums.TransactionType;
 import org.asue24.financetrackerbackend.dto.AuthenticationResponse;
 import org.asue24.financetrackerbackend.dto.CreateUserDto;
 import org.asue24.financetrackerbackend.dto.TransactionBody;

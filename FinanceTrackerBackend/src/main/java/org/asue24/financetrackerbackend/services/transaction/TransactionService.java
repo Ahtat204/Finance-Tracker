@@ -1,12 +1,8 @@
 package org.asue24.financetrackerbackend.services.transaction;
-import org.asue24.enums.TransactionType;
-import org.asue24.financetrackerbackend.dto.TransactionBody;
 import org.asue24.financetrackerbackend.entities.Transaction;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Service interface for managing {@link Transaction} entities.

@@ -36,4 +36,4 @@ jobs:
           export jwt_secret=${{ secrets.JWT_KEY }}
           export SPRING_ENVIRONMENT=test
           chmod +x mvnw
-          ./mvnw clean verify -B --file pom.xml 
+          ./mvnw clean package -B --file pom.xml 

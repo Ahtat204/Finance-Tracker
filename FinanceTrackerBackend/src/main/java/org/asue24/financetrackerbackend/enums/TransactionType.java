@@ -1,4 +1,4 @@
-package org.asue24.enums;
+package org.asue24.financetrackerbackend.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

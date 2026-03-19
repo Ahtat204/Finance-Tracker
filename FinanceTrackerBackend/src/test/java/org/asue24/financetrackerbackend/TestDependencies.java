@@ -14,7 +14,7 @@ import org.testcontainers.utility.DockerImageName;
 public class TestDependencies {
     @Container
     protected static final PostgreSQLContainer<?> postgresContainer =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
+            new PostgreSQLContainer<>(DockerImageName.parse("postgres:13.1-alpine"))
                     .withExposedPorts(5432).withAccessToHost(true)
                     .withUsername("postgres")
                     .withPassword("test")
