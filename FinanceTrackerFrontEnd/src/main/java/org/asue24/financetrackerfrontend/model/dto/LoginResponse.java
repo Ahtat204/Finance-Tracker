@@ -1,4 +1,4 @@
-package org.asue24.financetrackerfrontend.model.dto.login;
+package org.asue24.financetrackerfrontend.model.dto;
 
 import java.io.Serializable;
 

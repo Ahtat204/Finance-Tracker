@@ -4,16 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.asue24.financetrackerfrontend.model.dto.login.LoginRequest;
-import org.asue24.financetrackerfrontend.model.dto.login.LoginResponse;
-import org.asue24.financetrackerfrontend.services.AuthenticationService;
+import org.asue24.financetrackerfrontend.model.dto.LoginRequest;
+import org.asue24.financetrackerfrontend.model.dto.LoginResponse;
+import org.asue24.financetrackerfrontend.services.AuthenticationRepository;
 
 import java.net.MalformedURLException;
 
 import static org.asue24.financetrackerfrontend.Env.url;
 
 public class AuthController {
-    private final AuthenticationService authenticationService = new AuthenticationService();
+    private final AuthenticationRepository authenticationRepository = new AuthenticationRepository();
     @FXML
     private TextField username;
     @FXML
@@ -27,6 +27,7 @@ public class AuthController {
     @FXML
     public LoginResponse Login() {
         var loginRequest = new LoginRequest(username.getText(), password.getText());
-        return authenticationService.Authenticate(loginRequest, url);
+        return authenticationRepository.login(loginRequest, url);
     }
+
 }
