@@ -10,7 +10,7 @@ module org.asue24.financetrackerfrontend {
     requires java.net.http;
     requires com.google.gson;
     requires kotlin.stdlib;
-
+    requires com.fasterxml.jackson.databind;
     opens org.asue24.financetrackerfrontend to javafx.fxml;
     exports org.asue24.financetrackerfrontend;
     exports org.asue24.financetrackerfrontend.controllers to javafx.fxml;
