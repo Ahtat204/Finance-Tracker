@@ -10,10 +10,17 @@ import org.json.JSONObject
 
 class AuthenticationRepository {
 fun login(request: LoginRequest, url:String):LoginResponse{
-    val response: Response = post(url, json = mapOf("email" to request.email,"password" to request.password))
-    val rawJson: JSONObject = response.jsonObject
-    val mapper = ObjectMapper()
-    return mapper.readValue(rawJson.toString(), LoginResponse::class.java)
+    try {
+        val response: Response = post(url, json = mapOf("email" to request.email,"password" to request.password))
+        val rawJson: JSONObject = response.jsonObject
+        val mapper = ObjectMapper()
+        return mapper.readValue(rawJson.toString(), LoginResponse::class.java)
+    }
+    catch (e: Exception){
+        e.printStackTrace()
+    }
+    return LoginResponse("nothing",  "nothing")
+
 }
     fun register(request: RegisterRequest,url:String):RegisterReponse{
         val response: Response = post(url, json = mapOf("email" to request.email,"password" to request.password))
