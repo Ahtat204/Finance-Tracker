@@ -10,6 +10,7 @@ import org.json.JSONObject
 
 class AuthenticationRepository {
 fun login(request: LoginRequest, url:String):LoginResponse{
+    if(request.email==null || request.password==null) return LoginResponse("nothing", String())
     try {
         val response: Response = post(url, json = mapOf("email" to request.email,"password" to request.password))
         val rawJson: JSONObject = response.jsonObject
@@ -18,6 +19,7 @@ fun login(request: LoginRequest, url:String):LoginResponse{
     }
     catch (e: Exception){
         e.printStackTrace()
+        throw e;
     }
     return LoginResponse("nothing",  "nothing")
 
