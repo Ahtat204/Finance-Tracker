@@ -1,0 +1,74 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+GET localhost:8080/api/users
+###
+POST localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "Lahcen8ahtat",
+  "email": "lahe28ahtat@gmail.com",
+  "password": "lahce22"
+}
+###
+POST localhost:8080/api/accounts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzA5OTQ0NjUsImV4cCI6MTc3MDk5NjI2NX0.pUAw2OdAzRwezlylVQ6iNIrL99vr43xt9uo30izSwsA
+
+{
+  "accountName": "Ahtat",
+  "balance": 222,
+  "user": {
+    "id": 1
+  }
+}
+
+###
+POST localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "firstname": "Alice",
+  "lastname": "Smith",
+  "email": "aice.smth@example.com",
+  "password": "SecurePass123!"
+}
+
+###
+POST localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "aice.smth@example.com",
+  "rawPassword": "SecurePass123!"
+}
+###
+POST localhost:8080/api/transactions
+Content-Type:  application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzEwMTU4ODIsImV4cCI6MTc3MTAxNzY4Mn0.LLa0DMtLAY4gU8W1dh_qGHGqfR4cAj9hqnsnt1KK6yU
+
+{
+  "transaction": {
+    "amount": 20,
+    "transactionDate": "2025-02-03",
+    "Description": "test",
+    "Transactiontype":  "TRANSFER",
+    "account": {
+      "id": "2"
+    }
+  },
+  "receiverId": "1",
+  "senderId": "2"
+}
+###
+POST localhost:8080/actuator/metrics
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhaWNlLnNtdGhAZXhhbXBsZS5jb20iLCJpZCI6IjIiLCJpYXQiOjE3NzI2NjY1MTEsImV4cCI6MTc3MjY2ODMxMX0.c89W66G7KNvd7K-3DlA-nJQ2w0qcO_caHGb4Sb-oAuw
+Content-Type: application/json
+
+{
+  "username": "aice.smth@example.com",
+  "password": "SecurePass123!"
+}

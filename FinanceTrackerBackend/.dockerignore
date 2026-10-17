@@ -1,0 +1,5 @@
+
+src/test/
+.git/
+*.md
+.mvn/wrapper/*.jar

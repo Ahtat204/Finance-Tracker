@@ -10,15 +10,16 @@ target/
 .factorypath
 .project
 .settings
+Adds-on.txt
 .springBeans
 .sts4-cache
-
+src/main/ressources/applications.properties
 ### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
 *.ipr
-
+.env
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

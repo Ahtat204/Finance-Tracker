@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: FinanceTrackerBackend
+    version: 1.1
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    prometheus:
+      access: unrestricted
+    health:
+      show-details: always
+      cache:
+        time-to-live: 0ms
+
+    metrics:
+      tags:
+        application: FinanceTrackerBackend
+logging:
+  logback:
+    rollingpolicy:
+      clean-history-on-start:
+jwt_secret: ${JWT_SECRET}
+bucket_size: 20
+ADMIN_EMAIL: aice.smth@example.com
+ADMIN_PASSWORD: SecurePass123!

@@ -29,9 +29,6 @@ FinanceTrackerFrontEnd/src/main/resources/org/asue24/financetrackerfrontend/
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-**.png
-**.env
-**.txt
-**.gz
+
 ### VS Code ###
 .vscode/
